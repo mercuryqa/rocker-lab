@@ -24,7 +24,6 @@ jobs:
           .github/scripts/extract-versions.sh
 
   lint:
-    name: Lint
     needs: extract-vars
     uses: ./.github/workflows/lint-reusable.yml
     with:
