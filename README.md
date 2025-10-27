@@ -1,4 +1,4 @@
-# microservices
+# rocker-lab
 
 Для того чтобы вызывать команды из Taskfile, необходимо установить Taskfile CLI:
 
