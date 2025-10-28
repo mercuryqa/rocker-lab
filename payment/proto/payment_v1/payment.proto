@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package payment_v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/mercuryqa/rocket-lab/payment/pkg/payment_v1;payment_v1";
+
+// Перечисление способов оплаты
+enum PaymentMethod {
+    UNKNOWN = 0;
+    CARD = 1;
+    SBP = 2;
+    CREDIT_CARD = 3;
+    INVESTOR_MONEY = 4;
+}
+
+// gRPC-сервис оплаты
+service PaymentV1 {
+  rpc PayOrder (PayOrderRequest) returns (PayOrderResponse);
+
+}
+
+// Запрос на оплату
+message PayOrderRequest {
+  string order_uuid = 1;
+  string user_uuid = 2;
+  PaymentMethod  payment_method = 3;
+}
+
+// Ответ с идентификатором транзакции
+message PayOrderResponse {
+    string transaction_uuid = 1;
+}
