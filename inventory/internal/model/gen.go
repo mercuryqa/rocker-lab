@@ -3,17 +3,17 @@ package model
 import (
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
 func GenerateSampleData(s *InventoryStorage) {
-
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	now := time.Now()
-	ts, _ := ptypes.TimestampProto(now)
+	ts := timestamppb.New(now)
 
 	parts := []*pb.Part{
 		{
@@ -301,5 +301,4 @@ func GenerateSampleData(s *InventoryStorage) {
 	for _, part := range parts {
 		s.inventory[part.Uuid] = &pb.GetPartResponse{Part: part}
 	}
-
 }

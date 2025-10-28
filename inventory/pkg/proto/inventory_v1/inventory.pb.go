@@ -7,13 +7,14 @@
 package inventory_v1
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	_ "google.golang.org/protobuf/types/known/wrapperspb"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -853,22 +854,24 @@ func file_inventory_proto_rawDescGZIP() []byte {
 	return file_inventory_proto_rawDescData
 }
 
-var file_inventory_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_inventory_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_inventory_proto_goTypes = []interface{}{
-	(Category)(0),                 // 0: inventoryV1.Category
-	(*Dimensions)(nil),            // 1: inventoryV1.Dimensions
-	(*Manufacturer)(nil),          // 2: inventoryV1.Manufacturer
-	(*Value)(nil),                 // 3: inventoryV1.Value
-	(*Part)(nil),                  // 4: inventoryV1.Part
-	(*GetPartRequest)(nil),        // 5: inventoryV1.GetPartRequest
-	(*GetPartResponse)(nil),       // 6: inventoryV1.GetPartResponse
-	(*PartsFilter)(nil),           // 7: inventoryV1.PartsFilter
-	(*GetListPartRequest)(nil),    // 8: inventoryV1.GetListPartRequest
-	(*GetListPartResponse)(nil),   // 9: inventoryV1.GetListPartResponse
-	nil,                           // 10: inventoryV1.Part.MetadataEntry
-	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
-}
+var (
+	file_inventory_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+	file_inventory_proto_msgTypes  = make([]protoimpl.MessageInfo, 10)
+	file_inventory_proto_goTypes   = []interface{}{
+		(Category)(0),                 // 0: inventoryV1.Category
+		(*Dimensions)(nil),            // 1: inventoryV1.Dimensions
+		(*Manufacturer)(nil),          // 2: inventoryV1.Manufacturer
+		(*Value)(nil),                 // 3: inventoryV1.Value
+		(*Part)(nil),                  // 4: inventoryV1.Part
+		(*GetPartRequest)(nil),        // 5: inventoryV1.GetPartRequest
+		(*GetPartResponse)(nil),       // 6: inventoryV1.GetPartResponse
+		(*PartsFilter)(nil),           // 7: inventoryV1.PartsFilter
+		(*GetListPartRequest)(nil),    // 8: inventoryV1.GetListPartRequest
+		(*GetListPartResponse)(nil),   // 9: inventoryV1.GetListPartResponse
+		nil,                           // 10: inventoryV1.Part.MetadataEntry
+		(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	}
+)
 var file_inventory_proto_depIdxs = []int32{
 	0,  // 0: inventoryV1.Part.category:type_name -> inventoryV1.Category
 	1,  // 1: inventoryV1.Part.dimensions:type_name -> inventoryV1.Dimensions

@@ -8,7 +8,6 @@ import (
 )
 
 func (a *api) PayOrder(ctx context.Context, req *payment_v1.PayOrderRequest) (*payment_v1.PayOrderResponse, error) {
-
 	// Конвертируем proto → internal model
 	info := model.PayOrderRequest{
 		OrderUuid:     req.GetOrderUuid(),

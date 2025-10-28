@@ -3,14 +3,12 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -47,7 +45,7 @@ func main() {
 	stop := make(chan struct{})
 	// Запускаем сервер в отдельной горутине
 	go func() {
-		fmt.Printf("HTTP-server запущен не порту %s\n", httpPort)
+		// fmt.Printf("HTTP-server запущен не порту %s\n", httpPort)
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("Ошибка запуска сервера %v\n", err)
@@ -74,5 +72,4 @@ func main() {
 	}
 
 	log.Println("✅ Сервер остановлен")
-
 }

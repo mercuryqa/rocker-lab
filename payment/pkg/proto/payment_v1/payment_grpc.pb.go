@@ -8,6 +8,7 @@ package payment_v1
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -51,8 +52,7 @@ type PaymentV1Server interface {
 }
 
 // UnimplementedPaymentV1Server must be embedded to have forward compatible implementations.
-type UnimplementedPaymentV1Server struct {
-}
+type UnimplementedPaymentV1Server struct{}
 
 func (UnimplementedPaymentV1Server) PayOrder(context.Context, *PayOrderRequest) (*PayOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PayOrder not implemented")

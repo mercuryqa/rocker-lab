@@ -7,9 +7,7 @@ import (
 )
 
 func (s *service) PayOrder(ctx context.Context, info model.PayOrderRequest) (model.PayOrderResponse, error) {
-
 	// дополнительная логика
-
 	transactionUuid, err := s.paymentRepository.PayOrder(ctx, info)
 	if err != nil {
 		return model.PayOrderResponse{}, err

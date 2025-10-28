@@ -20,7 +20,6 @@ func NewService(orderRepository repository.OrderRepository) *service {
 
 // CreateOrder создает заказ
 func (s *service) CreateOrder(order *model.GetOrderResponse) {
-
 	s.orderRepository.CreateOrder(order)
 }
 

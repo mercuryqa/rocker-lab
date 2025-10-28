@@ -8,11 +8,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
+	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
 const (
@@ -24,8 +24,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	defer lis.Close()
-
+	defer func() {
+		if cerr := lis.Close(); cerr != nil {
+			log.Printf("failed to close listener: %v\n", cerr)
+		}
+	}()
 	grpcServer := grpc.NewServer()
 
 	// Используйте сервис из пакета models с правильной инициализацией

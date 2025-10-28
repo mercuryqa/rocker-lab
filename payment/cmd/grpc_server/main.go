@@ -21,35 +21,10 @@ const (
 	grpcPort = 50052
 )
 
-//type paymentService struct {
-//	paymentV1.UnimplementedPaymentV1Server
-//
-//	mu       sync.RWMutex
-//	payments map[string]*paymentV1.PaymentMethod
-//}
-
-// PayOrder
-//func (s *paymentService) PayOrder(_ context.Context, req *paymentV1.PayOrderRequest) (*paymentV1.PayOrderResponse, error) {
-//	s.mu.Lock()
-//	defer s.mu.Unlock()
-//
-//	// Генерируем новый UUID для транзакции
-//	transactionUUID := uuid.NewString()
-//
-//	log.Printf("Создана транзакция %s для заказа %s", transactionUUID, req.OrderUuid)
-//
-//	// Возвращаем ответ клиенту
-//	return &paymentV1.PayOrderResponse{
-//		TransactionUuid: transactionUUID,
-//	}, nil
-//
-//}
-
 func main() {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
-		log.Printf("failed to listen: %v\n", err)
-		return
+		log.Fatalf("failed to listen: %v", err)
 	}
 	defer func() {
 		if cerr := lis.Close(); cerr != nil {
@@ -63,11 +38,6 @@ func main() {
 	repo := paymentRepository.NewRepository()
 	service := paymentService.NewService(repo)
 	api := paymentV1API.NewAPI(service)
-
-	// Регистрируем наш сервис
-	//service := &paymentService{
-	//	payments: make(map[string]*paymentV1.PaymentMethod),
-	//}
 
 	paymentV1.RegisterPaymentV1Server(s, api)
 
