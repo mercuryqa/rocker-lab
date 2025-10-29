@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -80,4 +81,19 @@ func (h *OrderHandler) payOrder(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, map[string]interface{}{
 		"transaction_uuid": resp.TransactionUuid,
 	})
+}
+
+func toPaymentMethod(s string) paymentV1.PaymentMethod {
+	switch strings.ToUpper(strings.TrimSpace(s)) {
+	case "CARD":
+		return paymentV1.PaymentMethod_CARD
+	case "SBP":
+		return paymentV1.PaymentMethod_SBP
+	case "CREDIT_CARD":
+		return paymentV1.PaymentMethod_CREDIT_CARD
+	case "INVESTOR_MONEY":
+		return paymentV1.PaymentMethod_INVESTOR_MONEY
+	default:
+		return paymentV1.PaymentMethod_UNKNOWN
+	}
 }

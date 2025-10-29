@@ -3,10 +3,9 @@
 package apiV1
 
 import (
-	"strings"
+	"github.com/go-chi/chi/v5"
 
 	orderService "github.com/mercuryqa/rocket-lab/order/internal/service"
-	paymentV1 "github.com/mercuryqa/rocket-lab/payment/pkg/proto/payment_v1"
 )
 
 type OrderHandler struct {
@@ -19,17 +18,11 @@ func NewOrderHandler(service orderService.OrderService) *OrderHandler {
 	}
 }
 
-func toPaymentMethod(s string) paymentV1.PaymentMethod {
-	switch strings.ToUpper(strings.TrimSpace(s)) {
-	case "CARD":
-		return paymentV1.PaymentMethod_CARD
-	case "SBP":
-		return paymentV1.PaymentMethod_SBP
-	case "CREDIT_CARD":
-		return paymentV1.PaymentMethod_CREDIT_CARD
-	case "INVESTOR_MONEY":
-		return paymentV1.PaymentMethod_INVESTOR_MONEY
-	default:
-		return paymentV1.PaymentMethod_UNKNOWN
-	}
+func (h *OrderHandler) RegisterRoutes(r chi.Router) {
+	r.Route("/api/v1/orders", func(r chi.Router) {
+		r.Post("/", h.createOrder)
+		r.Post("/{order_uuid}/pay", h.payOrder)
+		r.Get("/{order_uuid}", h.getOrder)
+		r.Post("/{order_uuid}/cancel", h.cancelOrder)
+	})
 }

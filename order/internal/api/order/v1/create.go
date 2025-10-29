@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
@@ -16,15 +15,6 @@ import (
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 	"github.com/mercuryqa/rocket-lab/order/model"
 )
-
-func (h *OrderHandler) RegisterRoutes(r chi.Router) {
-	r.Route("/api/v1/orders", func(r chi.Router) {
-		r.Post("/", h.createOrder)
-		r.Post("/{order_uuid}/pay", h.payOrder)
-		r.Get("/{order_uuid}", h.getOrder)
-		r.Post("/{order_uuid}/cancel", h.cancelOrder)
-	})
-}
 
 func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
