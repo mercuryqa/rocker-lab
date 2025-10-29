@@ -13,7 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	apiV1 "github.com/mercuryqa/rocket-lab/order/internal/api/v1"
+	"github.com/mercuryqa/rocket-lab/order/internal/api/order/v1"
 	orderRepo "github.com/mercuryqa/rocket-lab/order/internal/repository/order"
 	orderService "github.com/mercuryqa/rocket-lab/order/internal/service/order"
 )
