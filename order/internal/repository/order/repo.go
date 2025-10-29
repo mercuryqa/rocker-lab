@@ -9,7 +9,7 @@ import (
 
 var _ def.OrderRepository = (*OrderRepository)(nil)
 
-// представляет потокобезопасное хранилище данных о заказах
+// Представляет потокобезопасное хранилище данных о заказах
 type OrderRepository struct {
 	mu     sync.Mutex
 	orders map[string]*model.GetOrderResponse

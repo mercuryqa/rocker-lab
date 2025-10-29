@@ -64,7 +64,7 @@ func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 		UserUuid:        req.UserUuid,
 		PartUuids:       req.PartUuids,
 		TotalPrice:      totalPrice,
-		TransactionUuid: "1",
+		TransactionUuid: "",
 		PaymentMethod:   "UNKNOWN",
 		Status:          "PENDING_PAYMENT",
 	}
