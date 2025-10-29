@@ -8,6 +8,6 @@ type OrderRepository interface {
 	CreateOrder(order *model.GetOrderResponse)
 	PayOrder(id, status string) bool
 	GetOrder(id string) (*model.GetOrderResponse, bool)
-	CanсelOrder(id, status string) bool
+	CancelOrder(id, status string) bool
 	UpdateOrder(id, paymentMethod, transactionUuid string) bool
 }
