@@ -1,6 +1,6 @@
 package order
 
-func (s *OrderService) UpdateOrder(id, paymentMethod, transactionUuid string) bool {
+func (s *OrderRepository) UpdateOrder(id, paymentMethod, transactionUuid string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

@@ -211,7 +211,7 @@ func (h *OrderHandler) cancelOrder(w http.ResponseWriter, r *http.Request) {
 
 	switch order.Status {
 	case "PENDING_PAYMENT":
-		h.service.CanselOrder(id, "CANCELED")
+		h.service.CanсelOrder(id, "CANCELED")
 		w.WriteHeader(http.StatusNoContent)
 		return
 	case "PAID":

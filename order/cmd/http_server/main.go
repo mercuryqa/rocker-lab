@@ -29,7 +29,7 @@ func main() {
 	// Инициализируем роутер Chi
 	r := chi.NewRouter()
 
-	repository := orderRepo.NewOrderStorage()
+	repository := orderRepo.NewOrderRepository()
 	service := orderService.NewService(repository)
 	handler := apiV1.NewOrderHandler(service)
 	handler.RegisterRoutes(r)
@@ -45,7 +45,7 @@ func main() {
 	stop := make(chan struct{})
 	// Запускаем сервер в отдельной горутине
 	go func() {
-		// fmt.Printf("HTTP-server запущен не порту %s\n", httpPort)
+		log.Printf("HTTP-server запущен не порту %s\n", httpPort)
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("Ошибка запуска сервера %v\n", err)

@@ -36,8 +36,8 @@ func (s *service) PayOrder(id, status string) bool {
 	return true
 }
 
-func (s *service) CanselOrder(id, status string) bool {
-	s.orderRepository.CanselOrder(id, status)
+func (s *service) CanсelOrder(id, status string) bool {
+	s.orderRepository.CanсelOrder(id, status)
 	return true
 }
 

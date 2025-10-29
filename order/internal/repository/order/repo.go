@@ -7,16 +7,16 @@ import (
 	"github.com/mercuryqa/rocket-lab/order/model"
 )
 
-var _ def.OrderRepository = (*OrderService)(nil)
+var _ def.OrderRepository = (*OrderRepository)(nil)
 
 // представляет потокобезопасное хранилище данных о заказах
-type OrderService struct {
+type OrderRepository struct {
 	mu     sync.Mutex
 	orders map[string]*model.GetOrderResponse
 }
 
-func NewOrderStorage() *OrderService {
-	return &OrderService{
+func NewOrderRepository() *OrderRepository {
+	return &OrderRepository{
 		orders: make(map[string]*model.GetOrderResponse),
 	}
 }

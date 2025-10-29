@@ -1,6 +1,6 @@
 package order
 
-func (s *OrderService) CanselOrder(id, status string) bool {
+func (s *OrderRepository) CanсelOrder(id, status string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
