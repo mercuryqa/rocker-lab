@@ -11,9 +11,6 @@ option go_package = "github.com/mercuryqa/rocket-lab/inventory/pkg/inventory_v1;
 service InventoryStorage {
   rpc GetPart (GetPartRequest) returns (GetPartResponse);
   rpc ListParts (GetListPartRequest) returns (GetListPartResponse);
-
-//  rpc ListParts (GetListPartRequest) returns (stream Part);
-
 }
 
 enum Category {

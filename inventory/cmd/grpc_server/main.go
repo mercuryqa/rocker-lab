@@ -8,11 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/inventory/storage"
+	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-
-	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
-	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
 const (
@@ -29,14 +28,14 @@ func main() {
 			log.Printf("failed to close listener: %v\n", cerr)
 		}
 	}()
+
 	grpcServer := grpc.NewServer()
 
-	// Используйте сервис из пакета models с правильной инициализацией
-	service := model.NewInventoryStorage()
+	reflection.Register(grpcServer)
+
+	service := storage.NewInventoryStorage()
 
 	inventoryV1.RegisterInventoryStorageServer(grpcServer, service)
-
-	reflection.Register(grpcServer)
 
 	go func() {
 		log.Printf("🚀 gRPC server listening on %d\n", grpcPort)
