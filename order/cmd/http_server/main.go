@@ -31,7 +31,7 @@ func main() {
 
 	repository := orderRepo.NewOrderRepository()
 	service := orderService.NewService(repository)
-	handler := apiV1.NewOrderHandler(service)
+	handler := apiv1.NewOrderHandler(service)
 	handler.RegisterRoutes(r)
 
 	// Запускаем HTTP-сервер

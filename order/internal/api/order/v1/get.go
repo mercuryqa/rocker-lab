@@ -1,4 +1,4 @@
-package apiV1
+package apiv1
 
 import (
 	"net/http"

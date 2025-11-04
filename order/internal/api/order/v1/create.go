@@ -1,4 +1,4 @@
-package apiV1
+package apiv1
 
 import (
 	"context"
@@ -41,15 +41,25 @@ func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPrice := 0.0
-	for _, partUUID := range req.PartUuids {
-		resp, err := client.GetPart(ctx, &inventoryV1.GetPartRequest{InventoryUuid: partUUID})
-		if err != nil {
-			log.Printf("grpc call failed: %v", err)
-			http.Error(w, "inventory service error: "+err.Error(), http.StatusBadGateway)
-			return
-		}
-		totalPrice += resp.Part.Price
+	resp, err := client.ListParts(ctx, &inventoryV1.GetListPartRequest{
+		Filter: &inventoryV1.PartsFilter{
+			Uuids: req.PartUuids,
+		},
+	})
+	if err != nil {
+		log.Printf("grpc ListParts call failed: %v", err)
+		http.Error(w, "inventory service error: "+err.Error(), http.StatusBadGateway)
+		return
+	}
+
+	if len(resp.Parts) == 0 {
+		http.Error(w, "no parts found for provided UUIDs", http.StatusNotFound)
+		return
+	}
+
+	var totalPrice float64
+	for _, part := range resp.Parts {
+		totalPrice += part.Price
 	}
 
 	orderUUID := uuid.New().String()

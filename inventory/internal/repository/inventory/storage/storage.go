@@ -3,12 +3,13 @@ package storage
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"sync"
 
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
+
+var ErrNotFound = errors.New("part not found")
 
 // InventoryStorage представляет потокобезопасное хранилище данных о заказах
 type InventoryStorage struct {
@@ -33,9 +34,8 @@ func (s *InventoryStorage) GetPart(ctx context.Context, req *inventoryV1.GetPart
 
 	part, ok := s.inventory[req.GetInventoryUuid()]
 	if !ok {
-		return nil, fmt.Errorf("part with id %q not found", req.GetInventoryUuid())
+		return nil, ErrNotFound
 	}
-
 	return part, nil
 }
 

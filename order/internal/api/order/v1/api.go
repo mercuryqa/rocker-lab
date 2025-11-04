@@ -1,6 +1,6 @@
 // internal/api/order_handler.go
 
-package apiV1
+package apiv1
 
 import (
 	"github.com/go-chi/chi/v5"
