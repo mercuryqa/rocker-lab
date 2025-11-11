@@ -8,5 +8,5 @@ import (
 
 type InventoryService interface {
 	GetPart(ctx context.Context, info *model.GetPartRequest) (*model.GetPartResponse, error)
-	// ListParts(ctx context.Context, info model.ListPartsRequest) (model.ListPartsResponse, error)
+	ListParts(ctx context.Context, info model.PartsFilter) (*model.ListPartsResponse, error)
 }

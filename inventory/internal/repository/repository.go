@@ -8,5 +8,5 @@ import (
 
 type InventoryRepository interface {
 	GetPart(ctx context.Context, req *inventoryV1.GetPartRequest) (*inventoryV1.GetPartResponse, error)
-	//ListParts(ctx context.Context, info *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error)
+	ListParts(ctx context.Context, info *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error)
 }

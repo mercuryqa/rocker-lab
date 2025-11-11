@@ -3,6 +3,7 @@ package inventory
 import (
 	"context"
 
+	converter "github.com/mercuryqa/rocket-lab/inventory/internal/converter"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository"
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/service"
@@ -21,17 +22,25 @@ func NewService(repo repository.InventoryRepository) *InventoryService {
 }
 
 func (s *InventoryService) GetPart(ctx context.Context, info *model.GetPartRequest) (*model.GetPartResponse, error) {
-	part, err := s.repo.GetPart(ctx, info)
+	protoReq := converter.GetPartRequestToProto(info) // model → protobuf
+	protoResp, err := s.repo.GetPart(ctx, protoReq)   // вызов репозитория
 	if err != nil {
-		return &model.GetPartResponse{}, err
+		return nil, err
 	}
-	return part, nil
+	return converter.GetPartResponseToModel(protoResp), nil // protobuf → model
 }
 
-// func (s *InventoryService) ListPart(ctx context.Context, info model.ListPartsRequest) (model.ListPartsResponse, error) {
-//	list, err := s.inventoryRepository.ListParts(ctx, info)
-//	if err != nil {
-//		return model.ListPartsResponse{}, err
-//	}
-//	return list, nil
-//}
+func (s *InventoryService) ListParts(ctx context.Context, info model.PartsFilter) (*model.ListPartsResponse, error) {
+	protoReq := converter.PartsFilterToProto(info)    // model → protobuf
+	protoResp, err := s.repo.ListParts(ctx, protoReq) // вызываем репозиторий
+	if err != nil {
+		return nil, err
+	}
+
+	parts := make([]model.Part, len(protoResp.Parts))
+	for i, p := range protoResp.Parts {
+		parts[i] = converter.PartFromProto(p) // конвертер protobuf → model.Part
+	}
+
+	return &model.ListPartsResponse{Parts: parts}, nil
+}

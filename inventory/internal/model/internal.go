@@ -67,3 +67,7 @@ type GetPartRequest struct {
 type GetPartResponse struct {
 	Part Part
 }
+
+type ListPartsResponse struct {
+	Parts []Part
+}

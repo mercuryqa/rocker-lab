@@ -80,3 +80,75 @@ func CategoriesToModel(categories []inventoryV1.Category) []model.Category {
 	}
 	return res
 }
+
+func GetPartRequestToProto(req *model.GetPartRequest) *inventoryV1.GetPartRequest {
+	return &inventoryV1.GetPartRequest{
+		InventoryUuid: req.InventoryUuid,
+	}
+}
+
+func GetPartResponseToModel(resp *inventoryV1.GetPartResponse) *model.GetPartResponse {
+	if resp == nil {
+		return nil
+	}
+	return &model.GetPartResponse{
+		Part: model.Part{
+			UUID:          resp.Part.Uuid,
+			Name:          resp.Part.Name,
+			Description:   resp.Part.Description,
+			Price:         resp.Part.Price,
+			StockQuantity: resp.Part.StockQuantity,
+			Category:      model.Category(resp.Part.Category), // если есть enum-конвертер, используем его
+			// остальные поля
+		},
+	}
+}
+
+func PartsFilterToProto(filter model.PartsFilter) *inventoryV1.GetListPartRequest {
+	return &inventoryV1.GetListPartRequest{
+		Filter: &inventoryV1.PartsFilter{
+			Uuids: filter.Uuids,
+			Names: filter.Names,
+			Tags:  filter.Tags,
+			// Categories нужно конвертировать в protobuf enum
+			Categories: CategoriesToProto(filter.Categories),
+		},
+	}
+}
+
+func CategoriesToProto(cats []model.Category) []inventoryV1.Category {
+	res := make([]inventoryV1.Category, len(cats))
+	for i, c := range cats {
+		res[i] = CategoryToProto(c)
+	}
+	return res
+}
+
+func PartFromProto(p *inventoryV1.Part) model.Part {
+	return model.Part{
+		UUID:          p.Uuid,
+		Name:          p.Name,
+		Description:   p.Description,
+		Price:         p.Price,
+		StockQuantity: p.StockQuantity,
+		Category:      model.Category(p.Category), // при необходимости через CategoryFromProto
+		Tags:          p.Tags,
+		// и Dimensions, Manufacturer, Metadata
+	}
+}
+
+// CategoryToProto конвертирует model.Category в inventory_v1.Category
+func CategoryToProto(c model.Category) inventoryV1.Category {
+	switch c {
+	case model.CategoryEngine:
+		return inventoryV1.Category_ENGINE
+	case model.CategoryFuel:
+		return inventoryV1.Category_FUEL
+	case model.CategoryPorthole:
+		return inventoryV1.Category_PORTHOLE
+	case model.CategoryWing:
+		return inventoryV1.Category_WING
+	default:
+		return inventoryV1.Category_UNKNOWN
+	}
+}
