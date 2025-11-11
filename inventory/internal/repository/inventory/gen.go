@@ -1,4 +1,4 @@
-package storage
+package inventory
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
-func GenerateSampleData(s *InventoryStorage) {
+func GenerateSampleData(s *InventoryRepository) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
