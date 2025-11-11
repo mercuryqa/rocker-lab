@@ -5,8 +5,46 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
+
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
+
+func DimensionsProtoToModel(pbDim *pb.Dimensions) *model.Dimensions {
+	if pbDim == nil {
+		return &model.Dimensions{}
+	}
+	return &model.Dimensions{
+		Length: pbDim.Length,
+		Width:  pbDim.Width,
+		Height: pbDim.Height,
+		Weight: pbDim.Weight,
+	}
+}
+
+func ManufacturerProtoToModel(pbMan *pb.Manufacturer) *model.Manufacturer {
+	if pbMan == nil {
+		return &model.Manufacturer{}
+	}
+	return &model.Manufacturer{
+		Name:    pbMan.Name,
+		Country: pbMan.Country,
+	}
+}
+
+func PartProtoToModel(pbPart *pb.Part) *model.Part {
+	return &model.Part{
+		UUID:          pbPart.Uuid,
+		Name:          pbPart.Name,
+		Description:   pbPart.Description,
+		Price:         pbPart.Price,
+		StockQuantity: pbPart.StockQuantity,
+		Category:      model.Category(pbPart.Category),
+		Dimensions:    *DimensionsProtoToModel(pbPart.Dimensions),     // разыменовываем
+		Manufacturer:  *ManufacturerProtoToModel(pbPart.Manufacturer), // разыменовываем
+		Tags:          pbPart.Tags,
+	}
+}
 
 func GenerateSampleData(s *InventoryRepository) {
 	s.mu.Lock()
@@ -298,7 +336,11 @@ func GenerateSampleData(s *InventoryRepository) {
 		},
 	}
 
-	for _, part := range parts {
-		s.inventory[part.Uuid] = &pb.GetPartResponse{Part: part}
+	for _, pbPart := range parts {
+		modelPart := PartProtoToModel(pbPart) // *model.Part
+		s.inventory[modelPart.UUID] = &model.GetPartResponse{
+			Part: *modelPart, // берем значение, а не указатель
+		}
 	}
+
 }

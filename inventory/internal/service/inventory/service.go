@@ -3,7 +3,6 @@ package inventory
 import (
 	"context"
 
-	"github.com/mercuryqa/rocket-lab/inventory/internal/converter"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository"
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/service"
@@ -12,7 +11,7 @@ import (
 var _ def.InventoryService = (*InventoryService)(nil)
 
 type InventoryService struct {
-	repo repository.InventoryRepository
+	repo repository.InventoryRepository // repo работает с model
 }
 
 func NewService(repo repository.InventoryRepository) *InventoryService {
@@ -21,26 +20,15 @@ func NewService(repo repository.InventoryRepository) *InventoryService {
 	}
 }
 
-func (s *InventoryService) GetPart(ctx context.Context, info *model.GetPartRequest) (*model.GetPartResponse, error) {
-	protoReq := converter.GetPartRequestToProto(info) // model → protobuf
-	protoResp, err := s.repo.GetPart(ctx, protoReq)   // вызов репозитория
-	if err != nil {
-		return nil, err
-	}
-	return converter.GetPartResponseToModel(protoResp), nil // protobuf → model
+// service/inventory.go
+func (s *InventoryService) GetPart(ctx context.Context, req *model.GetPartRequest) (*model.GetPartResponse, error) {
+	return s.repo.GetPart(ctx, req)
 }
 
-func (s *InventoryService) ListParts(ctx context.Context, info model.PartsFilter) (*model.ListPartsResponse, error) {
-	protoReq := converter.PartsFilterToProto(info)    // model → protobuf
-	protoResp, err := s.repo.ListParts(ctx, protoReq) // вызываем репозиторий
+func (s *InventoryService) ListParts(ctx context.Context, filter model.PartsFilter) (*model.ListPartsResponse, error) {
+	resp, err := s.repo.ListParts(ctx, filter) // resp — model.ListPartsResponse
 	if err != nil {
 		return nil, err
 	}
-
-	parts := make([]model.Part, len(protoResp.Parts))
-	for i, p := range protoResp.Parts {
-		parts[i] = converter.PartFromProto(p) // конвертер protobuf → model.Part
-	}
-
-	return &model.ListPartsResponse{Parts: parts}, nil
+	return &resp, nil // берем адрес структуры, чтобы получить *model.ListPartsResponse
 }
