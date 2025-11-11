@@ -8,7 +8,6 @@ package inventory_v1
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -63,12 +62,12 @@ type InventoryStorageServer interface {
 }
 
 // UnimplementedInventoryStorageServer must be embedded to have forward compatible implementations.
-type UnimplementedInventoryStorageServer struct{}
+type UnimplementedInventoryStorageServer struct {
+}
 
 func (UnimplementedInventoryStorageServer) GetPart(context.Context, *GetPartRequest) (*GetPartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPart not implemented")
 }
-
 func (UnimplementedInventoryStorageServer) ListParts(context.Context, *GetListPartRequest) (*GetListPartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListParts not implemented")
 }

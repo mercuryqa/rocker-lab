@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/repository"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
@@ -18,24 +19,24 @@ var _ def.InventoryRepository = (*InventoryRepository)(nil)
 type InventoryRepository struct {
 	inventoryV1.UnimplementedInventoryStorageServer
 
-	mu        sync.Mutex
-	inventory map[string]*inventoryV1.GetPartResponse
+	mu        sync.RWMutex
+	inventory map[string]*model.GetPartResponse
 }
 
 func NewInventoryStorage() *InventoryRepository {
 	s := &InventoryRepository{
-		inventory: make(map[string]*inventoryV1.GetPartResponse),
+		inventory: make(map[string]*model.GetPartResponse),
 	}
-	GenerateSampleData(s)
+	//GenerateSampleData(s)
 	return s
 }
 
 // Публичный метод реализует gRPC интерфейс
-func (s *InventoryRepository) GetPart(ctx context.Context, req *inventoryV1.GetPartRequest) (*inventoryV1.GetPartResponse, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InventoryRepository) GetPart(ctx context.Context, req *model.GetPartRequest) (*model.GetPartResponse, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 
-	part, ok := s.inventory[req.InventoryUuid]
+	part, ok := s.inventory[req.UUID]
 	if !ok {
 		return nil, ErrNotFound
 	}
@@ -54,7 +55,14 @@ func isFilterEmpty(f *inventoryV1.PartsFilter) bool {
 func (s *InventoryRepository) ListParts(ctx context.Context, req *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error) {
 	parts := make([]*inventoryV1.Part, 0, len(s.inventory))
 	for _, pResp := range s.inventory {
-		parts = append(parts, pResp.Part) // взять Part из GetPartResponse
+		// pResp уже содержит все нужные поля, просто создаём Part
+		part := &inventoryV1.Part{
+			Uuid:        pResp.UUID,
+			Name:        pResp.Name,
+			Description: pResp.Description,
+			// добавь остальные поля
+		}
+		parts = append(parts, part)
 	}
 	f := req.GetFilter()
 	if isFilterEmpty(f) {
