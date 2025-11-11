@@ -1,19 +1,30 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
-// Category — аналог enum Category из proto
-type Category int
-
-const (
-	CategoryUnknown  Category = 0
-	CategoryEngine   Category = 1
-	CategoryFuel     Category = 2
-	CategoryPorthole Category = 3
-	CategoryWing     Category = 4
-)
+// Part — основная сущность
+type Part struct {
+	UUID          string
+	Name          string
+	Description   string
+	Price         float64
+	StockQuantity int64
+	Category      Category
+	Dimensions    *Dimensions
+	Manufacturer  *Manufacturer
+	Tags          []string
+	Metadata      map[string]*Value
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+type PartsFilter struct {
+	Uuids                 []string
+	Names                 []string
+	Categories            []Category
+	ManufacturerCountries []string
+	ManufacturerNames     []string
+	Tags                  []string
+}
 
 // Dimensions — размеры детали
 type Dimensions struct {
@@ -38,18 +49,13 @@ type Value struct {
 	BoolValue   *bool
 }
 
-// Part — основная сущность
-type Part struct {
-	UUID          string
-	Name          string
-	Description   string
-	Price         float64
-	StockQuantity int64
-	Category      Category
-	Dimensions    *Dimensions
-	Manufacturer  *Manufacturer
-	Tags          []string
-	Metadata      map[string]*Value
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-}
+// Category — аналог enum Category из proto
+type Category int
+
+const (
+	CategoryUnknown  Category = 0
+	CategoryEngine   Category = 1
+	CategoryFuel     Category = 2
+	CategoryPorthole Category = 3
+	CategoryWing     Category = 4
+)
