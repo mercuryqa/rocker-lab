@@ -3,7 +3,7 @@ package inventory
 import (
 	"context"
 
-	converter "github.com/mercuryqa/rocket-lab/inventory/internal/converter"
+	"github.com/mercuryqa/rocket-lab/inventory/internal/converter"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository"
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/service"
