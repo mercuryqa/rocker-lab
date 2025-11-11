@@ -11,17 +11,17 @@ import (
 var _ def.InventoryService = (*InventoryService)(nil)
 
 type InventoryService struct {
-	inventoryRepository repository.InventoryRepository
+	repo repository.InventoryRepository
 }
 
-func NewService(inventoryRepository repository.InventoryRepository) *InventoryService {
+func NewService(repo repository.InventoryRepository) *InventoryService {
 	return &InventoryService{
-		inventoryRepository: inventoryRepository,
+		repo: repo,
 	}
 }
 
 func (s *InventoryService) GetPart(ctx context.Context, info *model.GetPartRequest) (*model.GetPartResponse, error) {
-	part, err := s.inventoryRepository.GetPart(ctx, info)
+	part, err := s.repo.GetPart(ctx, info)
 	if err != nil {
 		return &model.GetPartResponse{}, err
 	}

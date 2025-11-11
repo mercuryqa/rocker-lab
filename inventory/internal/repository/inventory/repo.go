@@ -20,27 +20,31 @@ type InventoryRepository struct {
 	inventoryV1.UnimplementedInventoryStorageServer
 
 	mu        sync.RWMutex
-	inventory map[string]*model.GetPartResponse
+	inventory map[string]*inventoryV1.GetPartResponse
 }
 
-func NewInventoryStorage() *InventoryRepository {
+func NewInventoryRepository() *InventoryRepository {
 	s := &InventoryRepository{
-		inventory: make(map[string]*model.GetPartResponse),
+		inventory: make(map[string]*inventoryV1.GetPartResponse),
 	}
-	//GenerateSampleData(s)
+	GenerateSampleData(s)
 	return s
 }
 
 // Публичный метод реализует gRPC интерфейс
-func (s *InventoryRepository) GetPart(ctx context.Context, req *model.GetPartRequest) (*model.GetPartResponse, error) {
+func (s *InventoryRepository) GetPart(ctx context.Context, req *inventoryV1.GetPartRequest) (*inventoryV1.GetPartResponse, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	part, ok := s.inventory[req.UUID]
+	partModel, ok := s.inventory[req.InventoryUuid] // тут у тебя map[string]*model.GetPartResponse
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return part, nil
+
+	// конвертация model → proto
+	return &inventoryV1.GetPartResponse{
+		Part: partModel.Part,
+	}, nil
 }
 
 // helper to check if filter is empty
@@ -51,19 +55,45 @@ func isFilterEmpty(f *inventoryV1.PartsFilter) bool {
 	return len(f.Uuids) == 0 && len(f.Names) == 0 && len(f.Categories) == 0 && len(f.ManufacturerCountries) == 0 && len(f.Tags) == 0
 }
 
-// ListParts implements filtering logic described in the task
+// CategoryToProto конвертирует модельную категорию в protobuf
+func CategoryToProto(c model.Category) inventoryV1.Category {
+	switch c {
+	case model.CategoryUnknown:
+		return inventoryV1.Category_ENGINE
+	case model.CategoryFuel:
+		return inventoryV1.Category_FUEL
+	case model.CategoryPorthole:
+		return inventoryV1.Category_PORTHOLE
+	case model.CategoryWing:
+		return inventoryV1.Category_WING
+	default:
+		return inventoryV1.Category_UNKNOWN
+	}
+}
+
+// ListParts возвращает список деталей с фильтрацией
 func (s *InventoryRepository) ListParts(ctx context.Context, req *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	// Сначала создаём protobuf Part из модели
 	parts := make([]*inventoryV1.Part, 0, len(s.inventory))
 	for _, pResp := range s.inventory {
-		// pResp уже содержит все нужные поля, просто создаём Part
 		part := &inventoryV1.Part{
-			Uuid:        pResp.UUID,
-			Name:        pResp.Name,
-			Description: pResp.Description,
-			// добавь остальные поля
+			Uuid:          pResp.Part.Uuid,
+			Name:          pResp.Part.Name,
+			Description:   pResp.Part.Description,
+			Price:         pResp.Part.Price,
+			StockQuantity: pResp.Part.StockQuantity,
+			Category:      pResp.Part.Category,
+			Dimensions:    pResp.Part.Dimensions,
+			Manufacturer:  pResp.Part.Manufacturer,
+			Tags:          pResp.Part.Tags,
 		}
 		parts = append(parts, part)
 	}
+
+	// Фильтр
 	f := req.GetFilter()
 	if isFilterEmpty(f) {
 		return &inventoryV1.GetListPartResponse{Parts: parts}, nil
@@ -80,11 +110,9 @@ func (s *InventoryRepository) ListParts(ctx context.Context, req *inventoryV1.Ge
 		parts = filterByNames(parts, f.Names)
 	}
 	if len(f.Categories) > 0 {
-		// Преобразуем []string в []inventoryV1.Category
 		categoriesEnums := make([]inventoryV1.Category, 0, len(f.Categories))
 		for _, c := range f.Categories {
-			cat := inventoryV1.Category(inventoryV1.Category_value[strings.ToUpper(c)])
-			categoriesEnums = append(categoriesEnums, cat)
+			categoriesEnums = append(categoriesEnums, CategoryToProto(model.Category(c)))
 		}
 		parts = filterByCategories(parts, categoriesEnums)
 	}
@@ -94,6 +122,7 @@ func (s *InventoryRepository) ListParts(ctx context.Context, req *inventoryV1.Ge
 	if len(f.Tags) > 0 {
 		parts = filterByTags(parts, f.Tags)
 	}
+
 	return &inventoryV1.GetListPartResponse{Parts: parts}, nil
 }
 

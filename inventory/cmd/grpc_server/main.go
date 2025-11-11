@@ -8,11 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/inventory"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -34,7 +33,7 @@ func main() {
 
 	reflection.Register(grpcServer)
 
-	service := inventory.NewInventoryStorage()
+	service := inventory.NewInventoryRepository()
 
 	inventoryV1.RegisterInventoryStorageServer(grpcServer, service)
 

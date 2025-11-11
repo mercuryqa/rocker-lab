@@ -59,3 +59,11 @@ const (
 	CategoryPorthole Category = 3
 	CategoryWing     Category = 4
 )
+
+type GetPartRequest struct {
+	inventoryUuid string
+}
+
+type GetPartResponse struct {
+	part Part
+}
