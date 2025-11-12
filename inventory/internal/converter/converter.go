@@ -1,9 +1,10 @@
 package converter
 
 import (
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func PartsToProto(parts map[string]model.Part) map[string]*inventoryV1.Part {
@@ -23,14 +24,13 @@ func PartToProto(part *model.Part) *inventoryV1.Part {
 		Name:        part.Name,
 		Description: part.Description, Price: part.Price,
 		StockQuantity: part.StockQuantity,
-		Category:      inventoryV1.Category(part.Category),
+		Category:      CategoryToProto(part.Category),
 		Dimensions:    DimensionsToProto(&part.Dimensions),
 		Manufacturer:  ManufacturerToProto(&part.Manufacturer),
 		Tags:          part.Tags,
 		CreatedAt:     timestamppb.New(part.CreatedAt),
 		UpdatedAt:     timestamppb.New(part.UpdatedAt),
 	}
-
 }
 
 func DimensionsToProto(dimensions *model.Dimensions) *inventoryV1.Dimensions {

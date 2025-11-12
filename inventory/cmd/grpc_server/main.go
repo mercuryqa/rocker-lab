@@ -8,12 +8,13 @@ import (
 	"os/signal"
 	"syscall"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+
 	apiv1 "github.com/mercuryqa/rocket-lab/inventory/internal/api/inventory/v1"
 	repository "github.com/mercuryqa/rocket-lab/inventory/internal/repository/inventory"
 	service "github.com/mercuryqa/rocket-lab/inventory/internal/service/inventory"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 const (

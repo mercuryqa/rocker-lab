@@ -6,7 +6,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
-
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
@@ -342,5 +341,4 @@ func GenerateSampleData(s *InventoryRepository) {
 			Part: *modelPart, // берем значение, а не указатель
 		}
 	}
-
 }

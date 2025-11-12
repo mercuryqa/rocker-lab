@@ -60,14 +60,6 @@ const (
 	CategoryWing     Category = 4
 )
 
-type GetPartRequest struct {
-	inventoryUuid string
-}
-
-type GetPartResponse struct {
-	part Part
-}
-
 type ListPartsResponse struct {
 	Parts []Part
 }
