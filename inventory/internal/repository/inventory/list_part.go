@@ -5,6 +5,7 @@ import (
 
 	domain "github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
+	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 )
 
 func (r *InventoryRepository) ListParts(ctx context.Context, filter domain.PartsFilter) (domain.ListPartsResponse, error) {
@@ -48,7 +49,8 @@ func (r *InventoryRepository) ListParts(ctx context.Context, filter domain.Parts
 		if len(filter.Categories) > 0 {
 			found := false
 			for _, c := range filter.Categories {
-				if string(repoPart.Category) == string(c) { // сравниваем по строковому значению
+				// сравнение через явное приведение к одному типу
+				if repoPart.Category == repoModel.Category(c) {
 					found = true
 					break
 				}

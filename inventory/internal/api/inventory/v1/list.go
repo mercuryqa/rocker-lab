@@ -8,7 +8,6 @@ import (
 )
 
 func (a *api) ListParts(ctx context.Context, req *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error) {
-	// Внутри берем фильтр
 	filter := converter.PartsFilterToModel(req.GetFilter())
 
 	list, err := a.inventoryService.ListParts(ctx, filter)

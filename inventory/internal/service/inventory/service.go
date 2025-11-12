@@ -20,7 +20,6 @@ func NewService(repo repository.InventoryRepository) *InventoryService {
 	}
 }
 
-// service/inventory.go
 func (s *InventoryService) GetPart(ctx context.Context, uuid string) (model.Part, error) {
 	return s.repo.GetPart(ctx, uuid)
 }

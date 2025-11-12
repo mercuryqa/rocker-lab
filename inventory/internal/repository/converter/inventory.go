@@ -28,13 +28,13 @@ func ManufacturerToModel(manufacturer *repoModel.Manufacturer) model.Manufacture
 	}
 }
 
-//func PartsToModel(parts map[string]repoModel.GetPartResponse) map[string]model.Part {
+// func PartsToModel(parts map[string]repoModel.GetPartResponse) map[string]model.Part {
 //	modelParts := map[string]model.Part{}
 //	for partUuid, part := range parts {
 //		modelParts[partUuid] = repoModelToModel(part)
 //	}
 //	return modelParts
-//}
+// }
 
 func RepoModelToModel(part *repoModel.GetPartResponse) model.Part {
 	return model.Part{
@@ -49,5 +49,21 @@ func RepoModelToModel(part *repoModel.GetPartResponse) model.Part {
 		Tags:          part.Part.Tags,
 		CreatedAt:     part.Part.CreatedAt,
 		UpdatedAt:     part.Part.UpdatedAt,
+	}
+}
+
+func RepoPartToDomain(p repoModel.Part) model.Part {
+	return model.Part{
+		UUID:     p.UUID,
+		Name:     p.Name,
+		Category: model.Category(p.Category), // преобразуем enum/alias типа Category
+	}
+}
+
+func DomainPartToRepo(p model.Part) repoModel.Part {
+	return repoModel.Part{
+		UUID:     p.UUID,
+		Name:     p.Name,
+		Category: repoModel.Category(p.Category), // Приведение типов enum/alias
 	}
 }

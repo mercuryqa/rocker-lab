@@ -6,6 +6,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
+	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
+	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
@@ -336,9 +338,15 @@ func GenerateSampleData(s *InventoryRepository) {
 	}
 
 	for _, pbPart := range parts {
+		// конвертируем protobuf → domain модель
 		modelPart := PartProtoToModel(pbPart) // *model.Part
-		s.inventory[modelPart.UUID] = &model.GetPartResponse{
-			Part: *modelPart, // берем значение, а не указатель
+
+		// теперь конвертируем domain → repository модель
+		repoPart := converter.DomainPartToRepo(*modelPart)
+
+		// сохраняем в inventory (map[string]*repoModel.GetPartResponse)
+		s.inventory[repoPart.UUID] = &repoModel.GetPartResponse{
+			Part: repoPart, // repoModel.Part
 		}
 	}
 }
