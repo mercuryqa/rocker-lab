@@ -55,7 +55,7 @@ func RepoPartToModel(p repoModel.Part) model.Part {
 		Dimensions:    model.Dimensions(p.Dimensions),
 		Manufacturer:  model.Manufacturer(p.Manufacturer),
 		Tags:          p.Tags,
-		//Metadata:      p.Metadata,
+		// Metadata:      p.Metadata,
 		CreatedAt: p.CreatedAt,
 		UpdatedAt: p.UpdatedAt,
 	}
@@ -72,7 +72,7 @@ func ModelPartToRepo(p model.Part) repoModel.Part {
 		Dimensions:    repoModel.Dimensions(p.Dimensions),
 		Manufacturer:  repoModel.Manufacturer(p.Manufacturer),
 		Tags:          p.Tags,
-		//Metadata:      p.Metadata,
+		// Metadata:      p.Metadata,
 		CreatedAt: p.CreatedAt,
 		UpdatedAt: p.UpdatedAt,
 	}

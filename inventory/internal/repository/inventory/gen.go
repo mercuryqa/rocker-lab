@@ -30,6 +30,7 @@ func ManufacturerProtoToModel(pbMan *pb.Manufacturer) *model.Manufacturer {
 	return &model.Manufacturer{
 		Name:    pbMan.Name,
 		Country: pbMan.Country,
+		Website: pbMan.Website, // <- добавляем
 	}
 }
 
