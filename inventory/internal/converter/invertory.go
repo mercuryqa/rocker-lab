@@ -20,9 +20,10 @@ func PartToProto(part *model.Part) *inventoryV1.Part {
 		return &inventoryV1.Part{}
 	}
 	return &inventoryV1.Part{
-		Uuid:        part.UUID,
-		Name:        part.Name,
-		Description: part.Description, Price: part.Price,
+		Uuid:          part.UUID,
+		Name:          part.Name,
+		Description:   part.Description,
+		Price:         part.Price,
 		StockQuantity: part.StockQuantity,
 		Category:      CategoryToProto(part.Category),
 		Dimensions:    DimensionsToProto(&part.Dimensions),
@@ -84,23 +85,6 @@ func CategoriesToModel(categories []inventoryV1.Category) []model.Category {
 func GetPartRequestToProto(req *model.GetPartRequest) *inventoryV1.GetPartRequest {
 	return &inventoryV1.GetPartRequest{
 		InventoryUuid: req.InventoryUuid,
-	}
-}
-
-func GetPartResponseToModel(resp *inventoryV1.GetPartResponse) *model.GetPartResponse {
-	if resp == nil {
-		return nil
-	}
-	return &model.GetPartResponse{
-		Part: model.Part{
-			UUID:          resp.Part.Uuid,
-			Name:          resp.Part.Name,
-			Description:   resp.Part.Description,
-			Price:         resp.Part.Price,
-			StockQuantity: resp.Part.StockQuantity,
-			Category:      model.Category(resp.Part.Category), // если есть enum-конвертер, используем его
-			// остальные поля
-		},
 	}
 }
 

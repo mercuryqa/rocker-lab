@@ -13,6 +13,6 @@ func (a *api) GetPart(ctx context.Context, req *inventoryV1.GetPartRequest) (*in
 		return nil, err
 	}
 	return &inventoryV1.GetPartResponse{
-		Part: converter.PartToProto(&part.Part),
+		Part: converter.PartToProto(&part),
 	}, nil
 }
