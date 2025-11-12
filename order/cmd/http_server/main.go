@@ -41,7 +41,8 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		log.Fatalf("failed to connect to inventory service: %v", err)
+		log.Println("Не удалось подключиться к сервису inventory:", err)
+		return // вместо fatal
 	}
 	defer func() {
 		if cerr := invConn.Close(); cerr != nil {
@@ -55,7 +56,8 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		log.Fatalf("failed to connect to payment service: %v", err)
+		log.Println("Не удалось подключиться к сервису оплаты:", err)
+		return // вместо fatal
 	}
 	defer func() {
 		if cerr := payConn.Close(); cerr != nil {
