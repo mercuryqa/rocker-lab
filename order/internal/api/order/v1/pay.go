@@ -47,23 +47,23 @@ func (h *OrderHandler) payOrder(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
-	conn, err := grpc.NewClient(
-		"localhost:50052",
-		grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		http.Error(w, "failed to connect to payment service: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer func() {
-		if cerr := conn.Close(); cerr != nil {
-			log.Printf("failed to close grpc connection: %v", cerr)
-		}
-	}()
-
-	client := paymentV1.NewPaymentV1Client(conn)
+	//conn, err := grpc.NewClient(
+	//	"localhost:50052",
+	//	grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//if err != nil {
+	//	http.Error(w, "failed to connect to payment service: "+err.Error(), http.StatusInternalServerError)
+	//	return
+	//}
+	//defer func() {
+	//	if cerr := conn.Close(); cerr != nil {
+	//		log.Printf("failed to close grpc connection: %v", cerr)
+	//	}
+	//}()
+	//
+	//client := paymentV1.NewPaymentV1Client(conn)
 
 	method := toPaymentMethod(req.PaymentMethod)
-	resp, err := client.PayOrder(ctx, &paymentV1.PayOrderRequest{
+	resp, err := h.service.PayOrder(ctx, &paymentV1.PayOrderRequest{
 		OrderUuid:     order.OrderUuid,
 		UserUuid:      order.UserUuid,
 		PaymentMethod: method,
