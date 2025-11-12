@@ -60,6 +60,10 @@ const (
 	CategoryWing     Category = 4
 )
 
+type GetPartResponse struct {
+	Part Part
+}
+
 type ListPartsResponse struct {
 	Parts []Part
 }

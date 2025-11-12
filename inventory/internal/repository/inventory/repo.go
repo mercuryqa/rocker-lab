@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/repository"
+	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
@@ -18,12 +18,12 @@ type InventoryRepository struct {
 	inventoryV1.UnimplementedInventoryStorageServer
 
 	mu        sync.RWMutex
-	inventory map[string]*model.Part
+	inventory map[string]*repoModel.GetPartResponse
 }
 
 func NewInventoryRepository() *InventoryRepository {
 	s := &InventoryRepository{
-		inventory: make(map[string]*model.Part),
+		inventory: make(map[string]*repoModel.GetPartResponse),
 	}
 	GenerateSampleData(s)
 	return s

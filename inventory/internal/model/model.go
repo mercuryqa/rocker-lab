@@ -64,10 +64,6 @@ type GetPartRequest struct {
 	InventoryUuid string
 }
 
-type GetPartResponse struct {
-	Part Part
-}
-
 type ListPartsResponse struct {
 	Parts []Part
 }
