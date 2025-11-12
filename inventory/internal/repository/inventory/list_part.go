@@ -61,7 +61,7 @@ func (r *InventoryRepository) ListParts(ctx context.Context, filter domain.Parts
 		}
 
 		// конвертируем из repository.model.Part в domain.model.Part
-		domainPart := converter.RepoPartToDomain(repoPart)
+		domainPart := converter.RepoPartToModel(repoPart)
 		result = append(result, domainPart)
 	}
 

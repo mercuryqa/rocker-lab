@@ -47,9 +47,9 @@ func PartProtoToModel(pbPart *pb.Part) *model.Part {
 	}
 }
 
-func GenerateSampleData(s *InventoryRepository) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func GenerateSampleData(r *InventoryRepository) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
 	now := time.Now()
 	ts := timestamppb.New(now)
@@ -342,10 +342,10 @@ func GenerateSampleData(s *InventoryRepository) {
 		modelPart := PartProtoToModel(pbPart) // *model.Part
 
 		// теперь конвертируем domain → repository модель
-		repoPart := converter.DomainPartToRepo(*modelPart)
+		repoPart := converter.ModelPartToRepo(*modelPart)
 
 		// сохраняем в inventory (map[string]*repoModel.GetPartResponse)
-		s.inventory[repoPart.UUID] = &repoModel.GetPartResponse{
+		r.inventory[repoPart.UUID] = &repoModel.GetPartResponse{
 			Part: repoPart, // repoModel.Part
 		}
 	}
