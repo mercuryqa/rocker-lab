@@ -1,9 +1,8 @@
 package v1
 
 import (
-	def "github.com/mercuryqa/rocket-lab/order/internal/client/grpc"
-
 	generatedInventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
+	def "github.com/mercuryqa/rocket-lab/order/internal/client/grpc"
 )
 
 var _ def.InventoryClient = (*client)(nil)

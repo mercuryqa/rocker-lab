@@ -12,7 +12,6 @@ func (c *client) PayOrder(ctx context.Context, orderUUID, userUUID string, payme
 		UserUuid:      userUUID,
 		PaymentMethod: paymentMethod,
 	})
-
 	if err != nil {
 		return "", err
 	}

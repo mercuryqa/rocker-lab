@@ -1,9 +1,8 @@
 package converter
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/internal/model"
-
 	generatedInventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 func PartListToModel(parts []*generatedInventoryV1.Part) []model.Part {
