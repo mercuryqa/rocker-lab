@@ -21,8 +21,8 @@ func NewService(repo repository.InventoryRepository) *InventoryService {
 }
 
 // service/inventory.go
-func (s *InventoryService) GetPart(ctx context.Context, req *model.GetPartRequest) (*model.GetPartResponse, error) {
-	return s.repo.GetPart(ctx, req)
+func (s *InventoryService) GetPart(ctx context.Context, uuid string) (*model.GetPartResponse, error) {
+	return s.repo.GetPart(ctx, uuid)
 }
 
 func (s *InventoryService) ListParts(ctx context.Context, filter model.PartsFilter) (*model.ListPartsResponse, error) {

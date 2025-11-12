@@ -18,12 +18,12 @@ type InventoryRepository struct {
 	inventoryV1.UnimplementedInventoryStorageServer
 
 	mu        sync.RWMutex
-	inventory map[string]*model.GetPartResponse
+	inventory map[string]*model.Part
 }
 
 func NewInventoryRepository() *InventoryRepository {
 	s := &InventoryRepository{
-		inventory: make(map[string]*model.GetPartResponse),
+		inventory: make(map[string]*model.Part),
 	}
 	GenerateSampleData(s)
 	return s
