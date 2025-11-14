@@ -10,7 +10,6 @@ import (
 )
 
 func (s *service) PayOrder(id, paymentMethod string) string {
-
 	order, ok := s.GetOrder(id)
 	if !ok {
 		log.Print("Order not found")
