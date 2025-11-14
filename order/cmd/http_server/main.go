@@ -37,7 +37,7 @@ func main() {
 
 	// Подключаемся к Inventory gRPC-сервису
 	invConn, err := grpc.NewClient(
-		"localhost:50555",
+		"localhost:50055",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -52,7 +52,7 @@ func main() {
 
 	// Подключаемся к Payment gRPC-сервису
 	payConn, err := grpc.NewClient(
-		"localhost:50552",
+		"localhost:50052",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -66,8 +66,8 @@ func main() {
 	}()
 
 	repository := orderRepo.NewOrderRepository()
-	paymentClient := gRPCpaymentV1.NewClient(paymentV1.NewPaymentV1Client(invConn))
-	inventoryClient := gRPCinventoryV1.NewClient(inventoryV1.NewInventoryStorageClient(payConn))
+	inventoryClient := gRPCinventoryV1.NewClient(inventoryV1.NewInventoryStorageClient(invConn))
+	paymentClient := gRPCpaymentV1.NewClient(paymentV1.NewPaymentV1Client(payConn))
 
 	service := orderService.NewService(repository, inventoryClient, paymentClient)
 	handler := apiv1.NewOrderHandler(service)

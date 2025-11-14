@@ -6,7 +6,7 @@ import (
 
 type OrderService interface {
 	CreateOrder(order *model.GetOrderResponse)
-	PayOrder(id, status string) bool
+	PayOrder(id, paymentMethod string) string
 	GetOrder(id string) (*model.GetOrderResponse, bool)
 	CancelOrder(id, status string) bool
 	UpdateOrder(id, paymentMethod, transactionUuid string) bool
