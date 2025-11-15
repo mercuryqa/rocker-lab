@@ -31,3 +31,7 @@ packages:
   github.com/mercuryqa/rocket-lab/payment/internal/service:
     config:
       include-regex: ".*Service"
+
+  github.com/mercuryqa/rocket-lab/payment/internal/repository:
+    config:
+      include-regex: ".*Repository"
