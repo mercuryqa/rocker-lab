@@ -112,13 +112,13 @@ type GetOrder struct {
 }
 
 type Order struct {
-	OrderUuid       string
-	UserUuid        string
-	PartUuids       []string
-	TotalPrice      float64
-	TransactionUuid string
-	PaymentMethod   PaymentMethod
-	Status          OrderStatus
+	OrderUuid       string        `json:"order_uuid"`
+	UserUuid        string        `json:"user_uuid"`
+	PartUuids       []string      `json:"part_uuids"`
+	TotalPrice      float64       `json:"total_price"`
+	TransactionUuid string        `json:"transaction_uuid"`
+	PaymentMethod   PaymentMethod `json:"payment_method"`
+	Status          OrderStatus   `json:"status"`
 }
 
 type PaymentMethod string

@@ -1,6 +1,8 @@
 package order
 
 import (
+	"log"
+
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 	repoModel "github.com/mercuryqa/rocket-lab/order/internal/repository/model"
 )
@@ -9,6 +11,8 @@ import (
 func (r *OrderRepository) CreateOrder(order *model.Order) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
+	log.Print("REPO SAVE ", order)
 
 	orderSave := &repoModel.Order{
 		OrderUuid:       order.OrderUuid,

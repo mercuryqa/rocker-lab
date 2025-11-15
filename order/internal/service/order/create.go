@@ -23,12 +23,12 @@ func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*m
 
 	// Провеока наличия деталей и подсчет суммы
 	var existsPartUuids []string
-	for partUuid, part := range parts {
+	for _, part := range parts {
 		if part.StockQuantity <= 0 {
 			continue
 		}
 		totalPrice += part.Price
-		existsPartUuids = append(existsPartUuids, string(partUuid))
+		existsPartUuids = append(existsPartUuids, part.UUID)
 	}
 	if len(existsPartUuids) == 0 {
 		log.Printf("No inventory %v\n", err)
@@ -36,6 +36,8 @@ func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*m
 	}
 
 	orderUUID := uuid.New().String()
+
+	log.Print(existsPartUuids)
 
 	order := model.Order{
 		OrderUuid:  orderUUID,
