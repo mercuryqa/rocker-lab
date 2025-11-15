@@ -20,6 +20,8 @@ func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
+	// TODO: убрать создание клиента - перенести на сервисный уровень
+
 	conn, err := grpc.NewClient(
 		"localhost:50055",
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
