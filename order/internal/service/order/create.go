@@ -37,8 +37,6 @@ func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*m
 
 	orderUUID := uuid.New().String()
 
-	log.Print(existsPartUuids)
-
 	order := model.Order{
 		OrderUuid:  orderUUID,
 		UserUuid:   info.GetUserUuid(),

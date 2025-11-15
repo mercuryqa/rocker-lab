@@ -1,8 +1,6 @@
 package order
 
 import (
-	"log"
-
 	"github.com/mercuryqa/rocket-lab/order/internal/converter"
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
@@ -15,8 +13,6 @@ func (r *OrderRepository) GetOrder(id string) (*model.Order, bool) {
 	if !ok {
 		return nil, false
 	}
-
-	log.Print(order)
 
 	return converter.RepoModelToModel(order), true
 }

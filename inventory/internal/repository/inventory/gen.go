@@ -5,48 +5,10 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
 	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
-
-func DimensionsProtoToModel(pbDim *pb.Dimensions) *model.Dimensions {
-	if pbDim == nil {
-		return &model.Dimensions{}
-	}
-	return &model.Dimensions{
-		Length: pbDim.Length,
-		Width:  pbDim.Width,
-		Height: pbDim.Height,
-		Weight: pbDim.Weight,
-	}
-}
-
-func ManufacturerProtoToModel(pbMan *pb.Manufacturer) *model.Manufacturer {
-	if pbMan == nil {
-		return &model.Manufacturer{}
-	}
-	return &model.Manufacturer{
-		Name:    pbMan.Name,
-		Country: pbMan.Country,
-		Website: pbMan.Website, // <- добавляем
-	}
-}
-
-func PartProtoToModel(pbPart *pb.Part) *model.Part {
-	return &model.Part{
-		UUID:          pbPart.Uuid,
-		Name:          pbPart.Name,
-		Description:   pbPart.Description,
-		Price:         pbPart.Price,
-		StockQuantity: pbPart.StockQuantity,
-		Category:      model.Category(pbPart.Category),
-		Dimensions:    *DimensionsProtoToModel(pbPart.Dimensions),     // разыменовываем
-		Manufacturer:  *ManufacturerProtoToModel(pbPart.Manufacturer), // разыменовываем
-		Tags:          pbPart.Tags,
-	}
-}
 
 func GenerateSampleData(r *InventoryRepository) {
 	r.mu.Lock()
@@ -340,7 +302,7 @@ func GenerateSampleData(r *InventoryRepository) {
 
 	for _, pbPart := range parts {
 		// конвертируем protobuf → domain модель
-		modelPart := PartProtoToModel(pbPart) // *model.Part
+		modelPart := converter.PartProtoToModel(pbPart) // *model.Part
 
 		// теперь конвертируем domain → repository модель
 		repoPart := converter.ModelPartToRepo(*modelPart)
