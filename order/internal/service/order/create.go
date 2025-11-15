@@ -5,12 +5,12 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 // CreateOrder создает заказ
 func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*model.OrderResponse, error) {
-
 	// Получаю запчасти по их id
 	parts, err := s.inventoryClient.ListParts(ctx, model.PartsFilter{
 		Uuids: info.GetPartUuids(),
