@@ -71,7 +71,7 @@ message GetPartResponse {
 message PartsFilter {
   repeated string uuids = 1;
   repeated string names = 2;
-  repeated string categories = 3;
+  repeated Category categories = 3;
   repeated string manufacturer_countries = 4;
   repeated string tags = 5;
 }
