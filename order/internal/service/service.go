@@ -1,13 +1,15 @@
 package service
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"context"
+
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 type OrderService interface {
-	CreateOrder(order *model.GetOrderResponse)
-	PayOrder(id, paymentMethod string) string
-	GetOrder(id string) (*model.GetOrderResponse, bool)
-	CancelOrder(id, status string) bool
-	UpdateOrder(id, paymentMethod, transactionUuid string) bool
+	CreateOrder(ctx context.Context, order *model.OrderRequest) (*model.OrderResponse, error)
+	PayOrder(id string, paymentMethod model.PaymentMethod) string
+	GetOrder(id string) (*model.Order, bool)
+	CancelOrder(id string, status model.OrderStatus) bool
+	UpdateOrder(id string, paymentMethod model.PaymentMethod, transactionUuid string) bool
 }

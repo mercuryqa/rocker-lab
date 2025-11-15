@@ -3,13 +3,13 @@ package order
 import (
 	"context"
 	"log"
-	"strings"
 	"time"
 
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 	paymentV1 "github.com/mercuryqa/rocket-lab/payment/pkg/proto/payment_v1"
 )
 
-func (s *service) PayOrder(id, paymentMethod string) string {
+func (s *service) PayOrder(id string, paymentMethod model.PaymentMethod) string {
 	order, ok := s.GetOrder(id)
 	if !ok {
 		log.Print("Order not found")
@@ -40,8 +40,8 @@ func (s *service) PayOrder(id, paymentMethod string) string {
 	return transactionUuid
 }
 
-func toPaymentMethod(s string) paymentV1.PaymentMethod {
-	switch strings.ToUpper(strings.TrimSpace(s)) {
+func toPaymentMethod(s model.PaymentMethod) paymentV1.PaymentMethod {
+	switch s {
 	case "CARD":
 		return paymentV1.PaymentMethod_CARD
 	case "SBP":

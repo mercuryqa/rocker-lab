@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 func (h *OrderHandler) payOrder(w http.ResponseWriter, r *http.Request) {

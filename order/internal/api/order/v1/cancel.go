@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 func (h *OrderHandler) cancelOrder(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +22,7 @@ func (h *OrderHandler) cancelOrder(w http.ResponseWriter, r *http.Request) {
 
 	switch order.Status {
 	case "PENDING_PAYMENT":
-		h.service.CancelOrder(id, "CANCELED")
+		h.service.CancelOrder(id, model.Cancelled)
 		w.WriteHeader(http.StatusNoContent)
 		return
 	case "PAID":
