@@ -145,9 +145,14 @@ tasks:
 
         ERR=0
         for mod in {{.MODULES}}; do
+          if [ ! -d "$mod" ]; then
+            echo "⚠️ Модуль $mod не найден, пропускаем"
+            continue
+          fi
+
           echo "📦 Обрабатываем модуль: $mod"
 
-          TARGET_PKGS=$(go list ./$mod/... \
+          TARGET_PKGS=$(go list ./$mod/... 2>/dev/null \
             | grep -E '/(internal/(service|repository))' \
             | grep -vE '/(mocks|testdata|pkg|api|proto|pb|cmd)' \
             | paste -sd "," -)
@@ -161,14 +166,13 @@ tasks:
             -coverprofile={{.COVERAGE_DIR}}/$mod.out \
             -covermode=atomic \
             $(echo "$TARGET_PKGS" | tr "," " ") || {
-            RET=$?
-            if [[ $RET -eq 2 ]]; then
-              echo "⚠️ covdata ошибка пропущена"
-            else
-              ERR=1
-            fi
-        }
-            
+              RET=$?
+              if [[ $RET -eq 2 ]]; then
+                echo "⚠️ covdata ошибка пропущена для модуля $mod"
+              else
+                ERR=1
+              fi
+          }
         done
 
         if [ $ERR -ne 0 ]; then
@@ -197,6 +201,7 @@ tasks:
         echo
         echo "🧾 Общее покрытие по всем модулям:"
         go tool cover -func={{.COVERAGE_DIR}}/{{.COVERAGE_FILE}} | tail -n1
+  
 
   coverage:html:
     desc: "Генерирует HTML-отчёт покрытия и открывает его в браузере"
