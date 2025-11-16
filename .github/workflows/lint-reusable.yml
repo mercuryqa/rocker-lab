@@ -34,6 +34,17 @@ jobs:
       - name: 📌 Install Task
         uses: arduino/setup-task@v2.0.0
 
+      - name: 🛠 Install mockery
+        run: |
+        # создаем ./bin для локальных бинарей
+          mkdir -p ./bin
+          
+        # устанавливаем последнюю версию mockery
+          go install github.com/vektra/mockery/v2@latest
+          
+        # перемещаем бинарь в ./bin
+          mv $(go env GOPATH)/bin/mockery ./bin/
+
       - name: ✅ Run golangci-lint via Taskfile
         env:
           MODULES: ${{ inputs.modules }}
