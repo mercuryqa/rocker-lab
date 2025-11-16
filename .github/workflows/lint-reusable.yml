@@ -41,11 +41,16 @@ jobs:
           MOCKERY_VERSION: v2.16.0
         run: |
           mkdir -p $BIN_DIR
+          ABS_BIN=$(realpath $BIN_DIR)
           if [ ! -f $MOCKERY ]; then
-            echo "📦 Installing mockery..."
-            GOBIN=$BIN_DIR go install github.com/vektra/mockery/v2@$MOCKERY_VERSION
+          echo "📦 Installing mockery..."
+          GOBIN=$ABS_BIN go install github.com/vektra/mockery/v2@$MOCKERY_VERSION
           fi
           chmod +x $MOCKERY
+
+      - name: 🔧 Add ./bin to PATH
+        run: echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
+      
 
       - name: ✅ Run golangci-lint via Taskfile
         env:
