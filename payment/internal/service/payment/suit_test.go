@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/mercuryqa/rocket-lab/payment/internal/repository/mocks"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/mercuryqa/rocket-lab/payment/internal/repository/mocks"
 )
 
 type ServiceSuit struct {

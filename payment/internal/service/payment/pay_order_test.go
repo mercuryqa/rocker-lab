@@ -7,7 +7,6 @@ import (
 )
 
 func (s *ServiceSuit) TestPaymentSuccess() {
-
 	ctx := context.Background()
 
 	info := model.PayOrderRequest{
@@ -21,11 +20,7 @@ func (s *ServiceSuit) TestPaymentSuccess() {
 	}
 
 	s.PaymentRepository.
-		On(
-			"PayOrder",
-			ctx,
-			info,
-		).
+		On("PayOrder", ctx, info).
 		Return(resp, nil)
 
 	transactionUuid, err := s.service.PayOrder(ctx, info)
