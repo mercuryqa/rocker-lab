@@ -22,9 +22,11 @@ func (s *ServiceSuite) TestCancelNotFound() {
 
 	status := model.Cancelled
 
-	s.OrderRepository.On("CancelOrder", id, status).Return(false)
+	s.OrderRepository.
+		On("CancelOrder", id, status).
+		Return(false)
 
-	ok := s.OrderRepository.CancelOrder(id, status)
+	ok := s.service.CancelOrder(id, status)
 
 	s.Require().False(ok)
 
