@@ -190,8 +190,8 @@ tasks:
         } > {{.COVERAGE_DIR}}/{{.COVERAGE_FILE}}
 
         echo
-        echo "🧾 Общее покрытие по всем модулям:"
-        go tool cover -func={{.COVERAGE_DIR}}/{{.COVERAGE_FILE}} | tail -n1
+        TOTAL=$(go tool cover -func={{.COVERAGE_DIR}}/{{.COVERAGE_FILE}} | tail -n1 | awk '{print $3}')
+        echo "🧾 Общее покрытие по всем модулям: $TOTAL"
 
   coverage:html:
     desc: "Генерирует HTML-отчёт покрытия и открывает его в браузере"
