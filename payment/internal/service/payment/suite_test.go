@@ -9,7 +9,7 @@ import (
 	"github.com/mercuryqa/rocket-lab/payment/internal/repository/mocks"
 )
 
-type ServiceSuit struct {
+type ServiceSuite struct {
 	suite.Suite
 
 	//nolint:containedctx
@@ -20,7 +20,7 @@ type ServiceSuit struct {
 	service *service
 }
 
-func (s *ServiceSuit) SetupTest() {
+func (s *ServiceSuite) SetupTest() {
 	s.ctx = context.Background()
 
 	s.PaymentRepository = mocks.NewPaymentRepository(s.T())
@@ -30,8 +30,8 @@ func (s *ServiceSuit) SetupTest() {
 	)
 }
 
-func (s *ServiceSuit) TearDownTest() {}
+func (s *ServiceSuite) TearDownTest() {}
 
 func TestServiceIntegration(t *testing.T) {
-	suite.Run(t, new(ServiceSuit))
+	suite.Run(t, new(ServiceSuite))
 }
