@@ -1,17 +1,18 @@
 package order
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"github.com/mercuryqa/rocket-lab/order/internal/converter"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
-func (s *OrderRepository) GetOrder(id string) (*model.GetOrderResponse, bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (r *OrderRepository) GetOrder(id string) (*model.Order, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
-	order, ok := s.orders[id]
+	order, ok := r.orders[id]
 	if !ok {
 		return nil, false
 	}
 
-	return order, true
+	return converter.RepoModelToModel(order), true
 }
