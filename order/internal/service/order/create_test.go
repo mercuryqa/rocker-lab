@@ -8,7 +8,7 @@ import (
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
-func (s *ServiceSuite) TestCreateSuccess2() {
+func (s *ServiceSuite) TestCreateSuccess() {
 	ctx := s.ctx
 
 	req := model.OrderRequest{

@@ -6,7 +6,7 @@ import (
 	"github.com/mercuryqa/rocket-lab/payment/internal/model"
 )
 
-func (s *ServiceSuite) TestPaymentSuccess() {
+func (s *ServiceSuite) TestPayOrderSuccess() {
 	ctx := context.Background()
 
 	info := model.PayOrderRequest{

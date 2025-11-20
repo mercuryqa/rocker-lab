@@ -11,7 +11,7 @@ import (
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
-func (a *APISuite) TestAPI_Get() {
+func (a *APISuite) TestAPIGetOrderSuccess() {
 	id := "order-123"
 
 	expectedOrder := &model.Order{
