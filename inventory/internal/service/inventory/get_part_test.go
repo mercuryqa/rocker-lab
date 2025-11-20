@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"context"
+	"errors"
 
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 )
@@ -28,6 +29,22 @@ func (s *ServiceSuite) TestInventorySuccess() {
 	s.Require().NoError(err)
 	s.Require().NotNil(part)
 	s.Require().Equal(resp, part)
+
+	s.InventoryRepository.AssertExpectations(s.T())
+}
+
+func (s *ServiceSuite) TestGetOrderNotFound() {
+	id := "missing-order"
+
+	// репозиторий возвращает nil, false
+	s.InventoryRepository.
+		On("GetPart", s.ctx, id).
+		Return(model.Part{}, errors.New("not found"))
+
+	part, err := s.service.GetPart(s.ctx, id)
+
+	s.Require().Error(err)
+	s.Require().Equal(model.Part{}, part)
 
 	s.InventoryRepository.AssertExpectations(s.T())
 }

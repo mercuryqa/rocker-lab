@@ -47,3 +47,28 @@ func (a *APISuite) TestAPI_Get() {
 
 	a.orderService.AssertExpectations(a.T())
 }
+
+func (a *APISuite) TestGetOrderNotFound() {
+	id := "missing-order"
+
+	a.orderService.
+		On("GetOrder", id).
+		Return((*model.Order)(nil), false)
+
+	r := httptest.NewRequest("GET", "/"+id, nil)
+
+	routeCtx := chi.NewRouteContext()
+	routeCtx.URLParams.Add("order_uuid", id)
+	r = r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, routeCtx))
+
+	w := httptest.NewRecorder()
+
+	a.api.getOrder(w, r)
+
+	a.Require().Equal(http.StatusNotFound, w.Code)
+
+	// http.Error добавляет \n в конец
+	a.Require().Equal("Order not found\n", w.Body.String())
+
+	a.orderService.AssertExpectations(a.T())
+}
