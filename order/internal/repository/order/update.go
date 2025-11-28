@@ -15,7 +15,7 @@ func (r *OrderRepository) UpdateOrder(id string, paymentMethod model.PaymentMeth
 	}
 
 	order.TransactionUuid = transactionUuid
-	order.PaymentMethod = converter.ModelPaymentMethodToRepoModelPaymentMethod(paymentMethod)
+	order.PaymentMethod = converter.ToRepoModelPaymentMethodModelPaymentMethod(paymentMethod)
 
 	return true
 }

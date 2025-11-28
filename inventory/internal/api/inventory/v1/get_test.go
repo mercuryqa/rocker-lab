@@ -35,7 +35,7 @@ func (a *APISuite) TestGetPartSuccess() {
 	a.Require().NoError(err)
 	a.Require().NotNil(resp)
 
-	expectedProto := converter.PartToProto(&partModel)
+	expectedProto := converter.ToProtoPart(&partModel)
 	a.Require().Equal(expectedProto, resp.Part)
 
 	a.inventoryService.AssertExpectations(a.T())

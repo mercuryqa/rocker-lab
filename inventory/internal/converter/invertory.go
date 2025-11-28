@@ -7,15 +7,17 @@ import (
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
-func PartsToProto(parts map[string]model.Part) map[string]*inventoryV1.Part {
-	protoParts := map[string]*inventoryV1.Part{}
-	for partUuid, part := range parts {
-		protoParts[partUuid] = PartToProto(&part)
+func ToProtoParts(parts []model.Part) []*inventoryV1.Part {
+	protoList := make([]*inventoryV1.Part, len(parts))
+
+	for i := range parts {
+		protoList[i] = ToProtoPart(&parts[i])
 	}
-	return protoParts
+
+	return protoList
 }
 
-func PartToProto(part *model.Part) *inventoryV1.Part {
+func ToProtoPart(part *model.Part) *inventoryV1.Part {
 	if part == nil {
 		return &inventoryV1.Part{}
 	}
@@ -25,16 +27,16 @@ func PartToProto(part *model.Part) *inventoryV1.Part {
 		Description:   part.Description,
 		Price:         part.Price,
 		StockQuantity: part.StockQuantity,
-		Category:      CategoryToProto(part.Category),
-		Dimensions:    DimensionsToProto(&part.Dimensions),
-		Manufacturer:  ManufacturerToProto(&part.Manufacturer),
+		Category:      ToProtoCategory(part.Category),
+		Dimensions:    ToProtoDimensions(&part.Dimensions),
+		Manufacturer:  ToProtoManufacturer(&part.Manufacturer),
 		Tags:          part.Tags,
 		CreatedAt:     timestamppb.New(part.CreatedAt),
 		UpdatedAt:     timestamppb.New(part.UpdatedAt),
 	}
 }
 
-func DimensionsToProto(dimensions *model.Dimensions) *inventoryV1.Dimensions {
+func ToProtoDimensions(dimensions *model.Dimensions) *inventoryV1.Dimensions {
 	if dimensions == nil {
 		return &inventoryV1.Dimensions{}
 	}
@@ -46,7 +48,7 @@ func DimensionsToProto(dimensions *model.Dimensions) *inventoryV1.Dimensions {
 	}
 }
 
-func ManufacturerToProto(manufacturer *model.Manufacturer) *inventoryV1.Manufacturer {
+func ToProtoManufacturer(manufacturer *model.Manufacturer) *inventoryV1.Manufacturer {
 	if manufacturer == nil {
 		return &inventoryV1.Manufacturer{}
 	}
@@ -57,20 +59,20 @@ func ManufacturerToProto(manufacturer *model.Manufacturer) *inventoryV1.Manufact
 	}
 }
 
-func PartsFilterToModel(filter *inventoryV1.PartsFilter) model.PartsFilter {
+func ToModelPartsFilter(filter *inventoryV1.PartsFilter) model.PartsFilter {
 	if filter == nil {
 		return model.PartsFilter{}
 	}
 	return model.PartsFilter{
 		Uuids:                 filter.Uuids,
 		Names:                 filter.Names,
-		Categories:            CategoriesToModel(filter.Categories),
+		Categories:            ToModelCategories(filter.Categories),
 		ManufacturerCountries: filter.ManufacturerCountries,
 		Tags:                  filter.Tags,
 	}
 }
 
-func CategoriesToModel(categories []inventoryV1.Category) []model.Category {
+func ToModelCategories(categories []inventoryV1.Category) []model.Category {
 	if len(categories) == 0 {
 		return nil
 	}
@@ -82,33 +84,33 @@ func CategoriesToModel(categories []inventoryV1.Category) []model.Category {
 	return res
 }
 
-func GetPartRequestToProto(req *model.GetPartRequest) *inventoryV1.GetPartRequest {
+func ToProtoGetPartRequest(req *model.GetPartRequest) *inventoryV1.GetPartRequest {
 	return &inventoryV1.GetPartRequest{
 		InventoryUuid: req.InventoryUuid,
 	}
 }
 
-func PartsFilterToProto(filter model.PartsFilter) *inventoryV1.GetListPartRequest {
+func ToProtoPartsFilter(filter model.PartsFilter) *inventoryV1.GetListPartRequest {
 	return &inventoryV1.GetListPartRequest{
 		Filter: &inventoryV1.PartsFilter{
 			Uuids: filter.Uuids,
 			Names: filter.Names,
 			Tags:  filter.Tags,
 			// Categories нужно конвертировать в protobuf enum
-			Categories: CategoriesToProto(filter.Categories),
+			Categories: ToProtoCategories(filter.Categories),
 		},
 	}
 }
 
-func CategoriesToProto(cats []model.Category) []inventoryV1.Category {
+func ToProtoCategories(cats []model.Category) []inventoryV1.Category {
 	res := make([]inventoryV1.Category, len(cats))
 	for i, c := range cats {
-		res[i] = CategoryToProto(c)
+		res[i] = ToProtoCategory(c)
 	}
 	return res
 }
 
-func PartFromProto(p *inventoryV1.Part) model.Part {
+func ToPartProto(p *inventoryV1.Part) model.Part {
 	return model.Part{
 		UUID:          p.Uuid,
 		Name:          p.Name,
@@ -121,8 +123,8 @@ func PartFromProto(p *inventoryV1.Part) model.Part {
 	}
 }
 
-// CategoryToProto конвертирует model.Category в inventory_v1.Category
-func CategoryToProto(c model.Category) inventoryV1.Category {
+// ToProtoCategory конвертирует model.Category в inventory_v1.Category
+func ToProtoCategory(c model.Category) inventoryV1.Category {
 	switch c {
 	case model.CategoryEngine:
 		return inventoryV1.Category_ENGINE

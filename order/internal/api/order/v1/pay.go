@@ -6,14 +6,22 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 func (h *OrderHandler) payOrder(w http.ResponseWriter, r *http.Request) {
-	uuid := chi.URLParam(r, "order_uuid")
-	if uuid == "" {
+	orderUUIDstr := chi.URLParam(r, "order_uuid")
+
+	if orderUUIDstr == "" {
 		http.Error(w, "Id parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	orderUUID, err := uuid.Parse(orderUUIDstr)
+	if err != nil {
+		http.Error(w, "Invalid UUID format", http.StatusBadRequest)
 		return
 	}
 
@@ -23,7 +31,7 @@ func (h *OrderHandler) payOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	transactionUuid := h.service.PayOrder(uuid, req.PaymentMethod)
+	transactionUuid := h.service.PayOrder(orderUUID.String(), req.PaymentMethod)
 
 	render.JSON(w, r, map[string]interface{}{
 		"transaction_uuid": transactionUuid,

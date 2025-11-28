@@ -10,7 +10,7 @@ import (
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
-func GenerateSampleData(r *InventoryRepository) {
+func generateSampleData(r *InventoryRepository) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -301,15 +301,10 @@ func GenerateSampleData(r *InventoryRepository) {
 	}
 
 	for _, pbPart := range parts {
-		// конвертируем protobuf → domain модель
-		modelPart := converter.PartProtoToModel(pbPart) // *model.Part
-
-		// теперь конвертируем domain → repository модель
+		modelPart := converter.PartProtoToModel(pbPart)
 		repoPart := converter.ModelPartToRepo(*modelPart)
-
-		// сохраняем в inventory (map[string]*repoModel.GetPartResponse)
 		r.inventory[repoPart.UUID] = &repoModel.GetPartResponse{
-			Part: repoPart, // repoModel.Part
+			Part: repoPart,
 		}
 	}
 }

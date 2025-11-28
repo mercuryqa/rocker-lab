@@ -14,6 +14,6 @@ func (r *OrderRepository) CancelOrder(id string, status model.OrderStatus) bool 
 		return false
 	}
 
-	order.Status = converter.ModelToRepoModel(status)
+	order.Status = converter.ToRepoModelModel(status)
 	return true
 }

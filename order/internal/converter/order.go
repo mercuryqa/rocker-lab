@@ -5,7 +5,7 @@ import (
 	repoModel "github.com/mercuryqa/rocket-lab/order/internal/repository/model"
 )
 
-func RepoModelToModel(order *repoModel.Order) *model.Order {
+func ToModelRepoModel(order *repoModel.Order) *model.Order {
 	return &model.Order{
 		OrderUuid:       order.OrderUuid,
 		UserUuid:        order.UserUuid,
@@ -17,10 +17,10 @@ func RepoModelToModel(order *repoModel.Order) *model.Order {
 	}
 }
 
-func ModelToRepoModel(status model.OrderStatus) repoModel.OrderStatus {
+func ToRepoModelModel(status model.OrderStatus) repoModel.OrderStatus {
 	return repoModel.OrderStatus(status)
 }
 
-func ModelPaymentMethodToRepoModelPaymentMethod(paymentMethod model.PaymentMethod) repoModel.PaymentMethod {
+func ToRepoModelPaymentMethodModelPaymentMethod(paymentMethod model.PaymentMethod) repoModel.PaymentMethod {
 	return repoModel.PaymentMethod(paymentMethod)
 }

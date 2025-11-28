@@ -1,15 +1,12 @@
 package inventory
 
 import (
-	"errors"
 	"sync"
 
 	def "github.com/mercuryqa/rocket-lab/inventory/internal/repository"
 	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
-
-var ErrNotFound = errors.New("part not found")
 
 var _ def.InventoryRepository = (*InventoryRepository)(nil)
 
@@ -25,6 +22,6 @@ func NewInventoryRepository() *InventoryRepository {
 	s := &InventoryRepository{
 		inventory: make(map[string]*repoModel.GetPartResponse),
 	}
-	GenerateSampleData(s)
+	generateSampleData(s)
 	return s
 }

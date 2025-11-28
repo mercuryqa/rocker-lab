@@ -3,16 +3,16 @@ package inventory
 import (
 	"context"
 
-	domain "github.com/mercuryqa/rocket-lab/inventory/internal/model"
+	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
 	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 )
 
-func (r *InventoryRepository) ListParts(ctx context.Context, filter domain.PartsFilter) (domain.ListPartsResponse, error) {
+func (r *InventoryRepository) ListParts(ctx context.Context, filter model.PartsFilter) (model.ListPartsResponse, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	result := make([]domain.Part, 0, len(r.inventory)) // возвращаем domain.Part
+	partsFiltered := make([]model.Part, 0, len(r.inventory)) // возвращаем domain.Part
 
 	for _, getPartResp := range r.inventory {
 		repoPart := getPartResp.Part // repoModel.Part
@@ -62,8 +62,8 @@ func (r *InventoryRepository) ListParts(ctx context.Context, filter domain.Parts
 
 		// конвертируем из repository.model.Part в domain.model.Part
 		domainPart := converter.RepoPartToModel(repoPart)
-		result = append(result, domainPart)
+		partsFiltered = append(partsFiltered, domainPart)
 	}
 
-	return domain.ListPartsResponse{Parts: result}, nil
+	return model.ListPartsResponse{Parts: partsFiltered}, nil
 }

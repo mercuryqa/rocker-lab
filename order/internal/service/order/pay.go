@@ -35,7 +35,7 @@ func (s *service) PayOrder(id string, paymentMethod model.PaymentMethod) string 
 	}
 
 	s.orderRepository.UpdateOrder(id, paymentMethod, transactionUuid)
-	s.orderRepository.PayOrder(id, "PAID")
+	s.orderRepository.PayOrder(id, model.Paid)
 
 	return transactionUuid
 }

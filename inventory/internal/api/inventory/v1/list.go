@@ -8,17 +8,14 @@ import (
 )
 
 func (a *api) ListParts(ctx context.Context, req *inventoryV1.GetListPartRequest) (*inventoryV1.GetListPartResponse, error) {
-	filter := converter.PartsFilterToModel(req.GetFilter())
+	filter := converter.ToModelPartsFilter(req.GetFilter())
 
 	list, err := a.inventoryService.ListParts(ctx, filter)
 	if err != nil {
 		return &inventoryV1.GetListPartResponse{}, err
 	}
 
-	protoParts := make([]*inventoryV1.Part, len(list.Parts))
-	for i, p := range list.Parts {
-		protoParts[i] = converter.PartToProto(&p)
-	}
+	protoParts := converter.ToProtoParts(list.Parts)
 
 	return &inventoryV1.GetListPartResponse{
 		Parts: protoParts,

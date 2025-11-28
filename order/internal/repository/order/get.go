@@ -14,5 +14,5 @@ func (r *OrderRepository) GetOrder(id string) (*model.Order, bool) {
 		return nil, false
 	}
 
-	return converter.RepoModelToModel(order), true
+	return converter.ToModelRepoModel(order), true
 }

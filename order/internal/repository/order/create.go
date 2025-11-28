@@ -16,7 +16,7 @@ func (r *OrderRepository) CreateOrder(order *model.Order) error {
 		PartUuids:       order.PartUuids,
 		TotalPrice:      order.TotalPrice,
 		TransactionUuid: "",
-		PaymentMethod:   "UNKNOWN",
+		PaymentMethod:   "",
 		Status:          repoModel.PendingPayment,
 	}
 
