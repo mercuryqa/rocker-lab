@@ -11,7 +11,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/inventory/storage"
+	apiv1 "github.com/mercuryqa/rocket-lab/inventory/internal/api/inventory/v1"
+	repository "github.com/mercuryqa/rocket-lab/inventory/internal/repository/inventory"
+	service "github.com/mercuryqa/rocket-lab/inventory/internal/service/inventory"
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
@@ -30,13 +32,20 @@ func main() {
 		}
 	}()
 
-	grpcServer := grpc.NewServer()
+	// 1️⃣ Создаём репозиторий (слой доступа к данным)
+	repo := repository.NewInventoryRepository()
 
+	// 2️⃣ Создаём сервис (слой бизнес-логики)
+	svc := service.NewService(repo) // InventoryService реализует InventoryStorageServer
+
+	api := apiv1.NewAPI(svc)
+
+	// 3️⃣ Создаём gRPC сервер
+	grpcServer := grpc.NewServer()
 	reflection.Register(grpcServer)
 
-	service := storage.NewInventoryStorage()
-
-	inventoryV1.RegisterInventoryStorageServer(grpcServer, service)
+	// 4️⃣ Регистрируем сервис
+	inventoryV1.RegisterInventoryStorageServer(grpcServer, api)
 
 	go func() {
 		log.Printf("🚀 gRPC server listening on %d\n", grpcPort)

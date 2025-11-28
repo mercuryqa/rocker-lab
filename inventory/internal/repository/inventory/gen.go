@@ -1,16 +1,18 @@
-package storage
+package inventory
 
 import (
 	"time"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
+	repoModel "github.com/mercuryqa/rocket-lab/inventory/internal/repository/model"
 	pb "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 )
 
-func GenerateSampleData(s *InventoryStorage) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func generateSampleData(r *InventoryRepository) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
 	now := time.Now()
 	ts := timestamppb.New(now)
@@ -298,7 +300,11 @@ func GenerateSampleData(s *InventoryStorage) {
 		},
 	}
 
-	for _, part := range parts {
-		s.inventory[part.Uuid] = &pb.GetPartResponse{Part: part}
+	for _, pbPart := range parts {
+		modelPart := converter.PartProtoToModel(pbPart)
+		repoPart := converter.ModelPartToRepo(*modelPart)
+		r.inventory[repoPart.UUID] = &repoModel.GetPartResponse{
+			Part: repoPart,
+		}
 	}
 }
