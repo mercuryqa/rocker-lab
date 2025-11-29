@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/mercuryqa/rocket-lab/order/model"
+	model "github.com/mercuryqa/rocket-lab/order/internal/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -72,55 +72,8 @@ func (_c *OrderRepository_CancelOrder_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
-// CheckItems provides a mock function with given fields: ctx, ids
-func (_m *OrderRepository) CheckItems(ctx context.Context, ids []string) bool {
-	ret := _m.Called(ctx, ids)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CheckItems")
-	}
-
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(context.Context, []string) bool); ok {
-		r0 = rf(ctx, ids)
-	} else {
-		r0 = ret.Get(0).(bool)
-	}
-
-	return r0
-}
-
-// OrderRepository_CheckItems_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckItems'
-type OrderRepository_CheckItems_Call struct {
-	*mock.Call
-}
-
-// CheckItems is a helper method to define mock.On call
-//   - ctx context.Context
-//   - ids []string
-func (_e *OrderRepository_Expecter) CheckItems(ctx interface{}, ids interface{}) *OrderRepository_CheckItems_Call {
-	return &OrderRepository_CheckItems_Call{Call: _e.mock.On("CheckItems", ctx, ids)}
-}
-
-func (_c *OrderRepository_CheckItems_Call) Run(run func(ctx context.Context, ids []string)) *OrderRepository_CheckItems_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].([]string))
-	})
-	return _c
-}
-
-func (_c *OrderRepository_CheckItems_Call) Return(_a0 bool) *OrderRepository_CheckItems_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OrderRepository_CheckItems_Call) RunAndReturn(run func(context.Context, []string) bool) *OrderRepository_CheckItems_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CreateOrder provides a mock function with given fields: ctx, order
-func (_m *OrderRepository) CreateOrder(ctx context.Context, order *model.GetOrderResponse) (string, error) {
+func (_m *OrderRepository) CreateOrder(ctx context.Context, order model.OrderInfo) (string, error) {
 	ret := _m.Called(ctx, order)
 
 	if len(ret) == 0 {
@@ -129,16 +82,16 @@ func (_m *OrderRepository) CreateOrder(ctx context.Context, order *model.GetOrde
 
 	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *model.GetOrderResponse) (string, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, model.OrderInfo) (string, error)); ok {
 		return rf(ctx, order)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *model.GetOrderResponse) string); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, model.OrderInfo) string); ok {
 		r0 = rf(ctx, order)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, *model.GetOrderResponse) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, model.OrderInfo) error); ok {
 		r1 = rf(ctx, order)
 	} else {
 		r1 = ret.Error(1)
@@ -154,14 +107,14 @@ type OrderRepository_CreateOrder_Call struct {
 
 // CreateOrder is a helper method to define mock.On call
 //   - ctx context.Context
-//   - order *model.GetOrderResponse
+//   - order model.OrderInfo
 func (_e *OrderRepository_Expecter) CreateOrder(ctx interface{}, order interface{}) *OrderRepository_CreateOrder_Call {
 	return &OrderRepository_CreateOrder_Call{Call: _e.mock.On("CreateOrder", ctx, order)}
 }
 
-func (_c *OrderRepository_CreateOrder_Call) Run(run func(ctx context.Context, order *model.GetOrderResponse)) *OrderRepository_CreateOrder_Call {
+func (_c *OrderRepository_CreateOrder_Call) Run(run func(ctx context.Context, order model.OrderInfo)) *OrderRepository_CreateOrder_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*model.GetOrderResponse))
+		run(args[0].(context.Context), args[1].(model.OrderInfo))
 	})
 	return _c
 }
@@ -171,29 +124,29 @@ func (_c *OrderRepository_CreateOrder_Call) Return(_a0 string, _a1 error) *Order
 	return _c
 }
 
-func (_c *OrderRepository_CreateOrder_Call) RunAndReturn(run func(context.Context, *model.GetOrderResponse) (string, error)) *OrderRepository_CreateOrder_Call {
+func (_c *OrderRepository_CreateOrder_Call) RunAndReturn(run func(context.Context, model.OrderInfo) (string, error)) *OrderRepository_CreateOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetOrder provides a mock function with given fields: ctx, id
-func (_m *OrderRepository) GetOrder(ctx context.Context, id string) (*model.GetOrderResponse, bool) {
+func (_m *OrderRepository) GetOrder(ctx context.Context, id string) (*model.OrderInfo, bool) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetOrder")
 	}
 
-	var r0 *model.GetOrderResponse
+	var r0 *model.OrderInfo
 	var r1 bool
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.GetOrderResponse, bool)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.OrderInfo, bool)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *model.GetOrderResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *model.OrderInfo); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.GetOrderResponse)
+			r0 = ret.Get(0).(*model.OrderInfo)
 		}
 	}
 
@@ -225,12 +178,12 @@ func (_c *OrderRepository_GetOrder_Call) Run(run func(ctx context.Context, id st
 	return _c
 }
 
-func (_c *OrderRepository_GetOrder_Call) Return(_a0 *model.GetOrderResponse, _a1 bool) *OrderRepository_GetOrder_Call {
+func (_c *OrderRepository_GetOrder_Call) Return(_a0 *model.OrderInfo, _a1 bool) *OrderRepository_GetOrder_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OrderRepository_GetOrder_Call) RunAndReturn(run func(context.Context, string) (*model.GetOrderResponse, bool)) *OrderRepository_GetOrder_Call {
+func (_c *OrderRepository_GetOrder_Call) RunAndReturn(run func(context.Context, string) (*model.OrderInfo, bool)) *OrderRepository_GetOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -14,7 +14,7 @@ import (
 func (a *APISuite) TestAPIGetOrderSuccess() {
 	id := "order-123"
 
-	expectedOrder := &model.Order{
+	expectedOrder := &model.OrderInfo{
 		OrderUuid:  id,
 		UserUuid:   "user-1",
 		PartUuids:  []string{"p1", "p2"},
@@ -39,7 +39,7 @@ func (a *APISuite) TestAPIGetOrderSuccess() {
 
 	a.Require().Equal(http.StatusOK, w.Code)
 
-	var got model.Order
+	var got model.OrderInfo
 	err := json.Unmarshal(w.Body.Bytes(), &got)
 	a.Require().NoError(err)
 
@@ -53,7 +53,7 @@ func (a *APISuite) TestGetOrderNotFound() {
 
 	a.orderService.
 		On("GetOrder", id).
-		Return((*model.Order)(nil), false)
+		Return((*model.OrderInfo)(nil), false)
 
 	r := httptest.NewRequest("GET", "/"+id, nil)
 

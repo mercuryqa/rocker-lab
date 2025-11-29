@@ -8,30 +8,13 @@ import (
 	"time"
 
 	"github.com/go-chi/render"
-	"github.com/google/uuid"
 
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
-
-	// ПОДКЛЮЧЕНИЕ К GRPC
-	// conn, err := grpc.NewClient(
-	//	"localhost:50055",
-	//	grpc.WithTransportCredentials(insecure.NewCredentials()))
-	// if err != nil {
-	//	http.Error(w, "failed to connect to inventory service: "+err.Error(), http.StatusInternalServerError)
-	//	return
-	// }
-	// defer func() {
-	//	if cerr := conn.Close(); cerr != nil {
-	//		log.Printf("failed to close grpc connection: %v", cerr)
-	//	}
-	// }()
-	//
-	// client := inventoryV1.NewInventoryStorageClient(conn)
 
 	var req model.OrderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -39,53 +22,17 @@ func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPrice := 0.0
-
-	// ПОДКЛЮЧЕНИЕ К GRPC
-	// for _, partUUID := range req.PartUuids {
-	//	resp, err := client.GetPart(ctx, &inventoryV1.GetPartRequest{InventoryUuid: partUUID})
-	//	if err != nil {
-	//		log.Printf("grpc call failed: %v", err)
-	//		http.Error(w, "inventory service error: "+err.Error(), http.StatusBadGateway)
-	//		return
-	//	}
-	//	totalPrice += resp.Part.Price
-	//}
-
-	// if !h.service.CheckItemsIn() {
-	//	log.Println("failed")
-	//	return
-	// }
-
-	ok := h.service.CheckItems(ctx, req.PartUuids)
-	if !ok {
-		log.Printf("No items ID")
-		return
-	}
-
-	orderUUID := uuid.New().String()
-
-	orderRes := &model.OrderResponse{
-		OrderUuid:  orderUUID,
-		TotalPrice: totalPrice,
-	}
-
-	orderSave := &model.GetOrderResponse{
-		OrderUuid:       orderUUID,
-		UserUuid:        req.UserUuid,
-		PartUuids:       req.PartUuids,
-		TotalPrice:      totalPrice,
-		TransactionUuid: "",
-		PaymentMethod:   "",
-		Status:          "PENDING_PAYMENT",
-	}
-
-	// var ids []string
-	// ids = req.PartUuids
-
-	err := h.service.CreateOrder(ctx, orderSave)
+	resp, err := h.service.CreateOrder(ctx, &model.OrderRequest{
+		UserUuid:  req.UserUuid,
+		PartUuids: req.PartUuids,
+	})
 	if err != nil {
 		log.Printf("failed to save order: %v\n", err)
+	}
+
+	orderRes := &model.OrderResponse{
+		OrderUuid:  resp.OrderUuid,
+		TotalPrice: resp.TotalPrice,
 	}
 
 	render.JSON(w, r, orderRes)

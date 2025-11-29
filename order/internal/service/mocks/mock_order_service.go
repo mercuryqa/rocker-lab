@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/mercuryqa/rocket-lab/order/model"
+	model "github.com/mercuryqa/rocket-lab/order/internal/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -72,69 +72,34 @@ func (_c *OrderService_CancelOrder_Call) RunAndReturn(run func(context.Context, 
 	return _c
 }
 
-// CheckItems provides a mock function with given fields: ctx, ids
-func (_m *OrderService) CheckItems(ctx context.Context, ids []string) bool {
-	ret := _m.Called(ctx, ids)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CheckItems")
-	}
-
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(context.Context, []string) bool); ok {
-		r0 = rf(ctx, ids)
-	} else {
-		r0 = ret.Get(0).(bool)
-	}
-
-	return r0
-}
-
-// OrderService_CheckItems_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckItems'
-type OrderService_CheckItems_Call struct {
-	*mock.Call
-}
-
-// CheckItems is a helper method to define mock.On call
-//   - ctx context.Context
-//   - ids []string
-func (_e *OrderService_Expecter) CheckItems(ctx interface{}, ids interface{}) *OrderService_CheckItems_Call {
-	return &OrderService_CheckItems_Call{Call: _e.mock.On("CheckItems", ctx, ids)}
-}
-
-func (_c *OrderService_CheckItems_Call) Run(run func(ctx context.Context, ids []string)) *OrderService_CheckItems_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].([]string))
-	})
-	return _c
-}
-
-func (_c *OrderService_CheckItems_Call) Return(_a0 bool) *OrderService_CheckItems_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OrderService_CheckItems_Call) RunAndReturn(run func(context.Context, []string) bool) *OrderService_CheckItems_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// CreateOrder provides a mock function with given fields: ctx, order
-func (_m *OrderService) CreateOrder(ctx context.Context, order *model.GetOrderResponse) error {
-	ret := _m.Called(ctx, order)
+// CreateOrder provides a mock function with given fields: ctx, info
+func (_m *OrderService) CreateOrder(ctx context.Context, info *model.OrderRequest) (*model.OrderResponse, error) {
+	ret := _m.Called(ctx, info)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateOrder")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *model.GetOrderResponse) error); ok {
-		r0 = rf(ctx, order)
+	var r0 *model.OrderResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *model.OrderRequest) (*model.OrderResponse, error)); ok {
+		return rf(ctx, info)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *model.OrderRequest) *model.OrderResponse); ok {
+		r0 = rf(ctx, info)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.OrderResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, *model.OrderRequest) error); ok {
+		r1 = rf(ctx, info)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // OrderService_CreateOrder_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateOrder'
@@ -144,46 +109,46 @@ type OrderService_CreateOrder_Call struct {
 
 // CreateOrder is a helper method to define mock.On call
 //   - ctx context.Context
-//   - order *model.GetOrderResponse
-func (_e *OrderService_Expecter) CreateOrder(ctx interface{}, order interface{}) *OrderService_CreateOrder_Call {
-	return &OrderService_CreateOrder_Call{Call: _e.mock.On("CreateOrder", ctx, order)}
+//   - info *model.OrderRequest
+func (_e *OrderService_Expecter) CreateOrder(ctx interface{}, info interface{}) *OrderService_CreateOrder_Call {
+	return &OrderService_CreateOrder_Call{Call: _e.mock.On("CreateOrder", ctx, info)}
 }
 
-func (_c *OrderService_CreateOrder_Call) Run(run func(ctx context.Context, order *model.GetOrderResponse)) *OrderService_CreateOrder_Call {
+func (_c *OrderService_CreateOrder_Call) Run(run func(ctx context.Context, info *model.OrderRequest)) *OrderService_CreateOrder_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*model.GetOrderResponse))
+		run(args[0].(context.Context), args[1].(*model.OrderRequest))
 	})
 	return _c
 }
 
-func (_c *OrderService_CreateOrder_Call) Return(_a0 error) *OrderService_CreateOrder_Call {
-	_c.Call.Return(_a0)
+func (_c *OrderService_CreateOrder_Call) Return(_a0 *model.OrderResponse, _a1 error) *OrderService_CreateOrder_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OrderService_CreateOrder_Call) RunAndReturn(run func(context.Context, *model.GetOrderResponse) error) *OrderService_CreateOrder_Call {
+func (_c *OrderService_CreateOrder_Call) RunAndReturn(run func(context.Context, *model.OrderRequest) (*model.OrderResponse, error)) *OrderService_CreateOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetOrder provides a mock function with given fields: ctx, id
-func (_m *OrderService) GetOrder(ctx context.Context, id string) (*model.GetOrderResponse, bool) {
+func (_m *OrderService) GetOrder(ctx context.Context, id string) (*model.OrderInfo, bool) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetOrder")
 	}
 
-	var r0 *model.GetOrderResponse
+	var r0 *model.OrderInfo
 	var r1 bool
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.GetOrderResponse, bool)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.OrderInfo, bool)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *model.GetOrderResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *model.OrderInfo); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.GetOrderResponse)
+			r0 = ret.Get(0).(*model.OrderInfo)
 		}
 	}
 
@@ -215,12 +180,12 @@ func (_c *OrderService_GetOrder_Call) Run(run func(ctx context.Context, id strin
 	return _c
 }
 
-func (_c *OrderService_GetOrder_Call) Return(_a0 *model.GetOrderResponse, _a1 bool) *OrderService_GetOrder_Call {
+func (_c *OrderService_GetOrder_Call) Return(_a0 *model.OrderInfo, _a1 bool) *OrderService_GetOrder_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OrderService_GetOrder_Call) RunAndReturn(run func(context.Context, string) (*model.GetOrderResponse, bool)) *OrderService_GetOrder_Call {
+func (_c *OrderService_GetOrder_Call) RunAndReturn(run func(context.Context, string) (*model.OrderInfo, bool)) *OrderService_GetOrder_Call {
 	_c.Call.Return(run)
 	return _c
 }

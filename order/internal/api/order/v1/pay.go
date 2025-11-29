@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 	paymentV1 "github.com/mercuryqa/rocket-lab/payment/pkg/proto/payment_v1"
 )
 

@@ -9,10 +9,10 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 
-	"github.com/mercuryqa/rocket-lab/order/model"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
-func (r *OrderRepository) GetOrder(ctx context.Context, id string) (*model.GetOrderResponse, bool) {
+func (r *OrderRepository) GetOrder(ctx context.Context, id string) (*model.OrderInfo, bool) {
 	// TODO #3 "part_uuids" из базы order_items
 	builderSelect := sq.
 		Select("order_uuid", "user_uuid", "total_price", "transaction_uuid", "payment_method", "status").
@@ -26,7 +26,7 @@ func (r *OrderRepository) GetOrder(ctx context.Context, id string) (*model.GetOr
 		return nil, false
 	}
 
-	var order model.GetOrderResponse
+	var order model.OrderInfo
 
 	// TODO &order.PartUuids
 	err = r.poolDb.
