@@ -19,7 +19,7 @@ func (s *ServiceSuite) TestGetOrderSuccess() {
 		On("GetOrder", id).
 		Return(expectedOrder, true)
 
-	order, ok := s.service.GetOrder(id)
+	order, ok := s.service.GetOrder(s.ctx, id)
 
 	s.Require().True(ok)
 	s.Require().NotNil(order)
@@ -36,7 +36,7 @@ func (s *ServiceSuite) TestGetOrderNotFound() {
 		On("GetOrder", id).
 		Return((*model.Order)(nil), false)
 
-	order, ok := s.service.GetOrder(id)
+	order, ok := s.service.GetOrder(s.ctx, id)
 
 	s.Require().False(ok)
 	s.Require().Nil(order)

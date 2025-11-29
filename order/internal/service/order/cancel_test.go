@@ -6,11 +6,11 @@ import (
 
 func (s *ServiceSuite) TestCancelSuccess() {
 	id := "123"
-	status := model.Cancelled
+	status := string(model.Cancelled)
 
 	s.OrderRepository.On("CancelOrder", id, status).Return(true)
 
-	ok := s.OrderRepository.CancelOrder(id, status)
+	ok := s.OrderRepository.CancelOrder(s.ctx, id, status)
 
 	s.Require().True(ok)
 
@@ -20,13 +20,13 @@ func (s *ServiceSuite) TestCancelSuccess() {
 func (s *ServiceSuite) TestCancelNotFound() {
 	id := "123"
 
-	status := model.Cancelled
+	status := string(model.Cancelled)
 
 	s.OrderRepository.
 		On("CancelOrder", id, status).
 		Return(false)
 
-	ok := s.service.CancelOrder(id, status)
+	ok := s.service.CancelOrder(s.ctx, id, status)
 
 	s.Require().False(ok)
 

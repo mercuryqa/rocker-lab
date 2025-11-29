@@ -1,19 +1,31 @@
 package order
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/internal/converter"
-	"github.com/mercuryqa/rocket-lab/order/internal/model"
+	"context"
+	"log"
+
+	sq "github.com/Masterminds/squirrel"
 )
 
-func (r *OrderRepository) CancelOrder(id string, status model.OrderStatus) bool {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (r *OrderRepository) CancelOrder(ctx context.Context, id, status string) bool {
+	log.Printf("id: %v\n status: %v\n", id, status)
 
-	order, ok := r.orders[id]
-	if !ok {
+	builderUpdate := sq.Update("orders").
+		Set("status", "CANCEL").
+		Where(sq.Eq{"order_uuid": id}).
+		PlaceholderFormat(sq.Dollar)
+
+	query, args, err := builderUpdate.ToSql()
+	if err != nil {
+		log.Printf("failed to build query")
 		return false
 	}
 
-	order.Status = converter.ToRepoModelModel(status)
+	_, err = r.poolDb.Exec(ctx, query, args...)
+	if err != nil {
+		log.Printf("Ошибка insert в таблицу orders: %v\n", err)
+		return false
+	}
+
 	return true
 }

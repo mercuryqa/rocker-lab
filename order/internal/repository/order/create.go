@@ -1,26 +1,60 @@
 package order
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/internal/model"
+	"context"
+	"log"
+
+	sq "github.com/Masterminds/squirrel"
+
 	repoModel "github.com/mercuryqa/rocket-lab/order/internal/repository/model"
+	"github.com/mercuryqa/rocket-lab/order/model"
 )
 
 // CreateOrder создает заказ
-func (r *OrderRepository) CreateOrder(order *model.Order) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (r *OrderRepository) CreateOrder(ctx context.Context, order *model.GetOrderResponse) (string, error) {
+	// КОД ДЛЯ ТРАНЗАКЦИИ
+	// tx, err := r.poolDb.BeginTx(ctx, pgx.TxOptions{})
+	// if err != nil {
+	//	panic(err)
+	// }
+	// defer func() {
+	//	err = tx.Rollback(ctx)
+	//	if err != nil {
+	//		log.Printf("Ошибка отмены tr: %v\n", err)
+	//	}
+	// }()
 
-	orderSave := &repoModel.Order{
-		OrderUuid:       order.OrderUuid,
-		UserUuid:        order.UserUuid,
-		PartUuids:       order.PartUuids,
-		TotalPrice:      order.TotalPrice,
-		TransactionUuid: "",
-		PaymentMethod:   "",
-		Status:          repoModel.PendingPayment,
+	// log.Printf("IDS %v\n", ids)
+	//
+	// if !r.CheckItems(ctx, ids) {
+	//	log.Printf("failed find items")
+	//	return "", nil
+	//}
+
+	builderInsert := sq.Insert("orders").
+		PlaceholderFormat(sq.Dollar).
+		Columns("order_uuid", "user_uuid", "total_price", "status", "payment_method").
+		Values(order.OrderUuid, order.UserUuid, order.TotalPrice, repoModel.PendingPayment, "").
+		Suffix("RETURNING order_uuid")
+
+	query, args, err := builderInsert.ToSql()
+	if err != nil {
+		log.Printf("Ошибка build query: %v\n", err)
+		return "", err
 	}
 
-	r.orders[order.OrderUuid] = orderSave
+	var orderUuidDb string
+	err = r.poolDb.QueryRow(ctx, query, args...).Scan(&orderUuidDb)
+	if err != nil {
+		log.Printf("Ошибка insert в таблицу orders: %v\n", err)
+		return "", err
+	}
 
-	return nil
+	// КОД ДЛЯ ТРАНЗАКЦИИ
+	// err = tx.Commit(ctx)
+	// if err != nil {
+	//	panic(err)
+	// }
+
+	return order.OrderUuid, nil
 }

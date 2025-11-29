@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -20,6 +21,7 @@ import (
 	gRPCinventoryV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/inventory/v1"
 	gRPCpaymentV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/payment/v1"
 	orderRepo "github.com/mercuryqa/rocket-lab/order/internal/repository/order"
+	"github.com/mercuryqa/rocket-lab/order/internal/repository/order/db"
 	orderService "github.com/mercuryqa/rocket-lab/order/internal/service/order"
 	paymentV1 "github.com/mercuryqa/rocket-lab/payment/pkg/proto/payment_v1"
 )
@@ -32,6 +34,17 @@ const (
 )
 
 func main() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Printf("⚠️  Не удалось загрузить .env: %v", err)
+	}
+
+	pool := db.GetDbPool()
+	defer pool.Close()
+
+	// дальше — инициализация репозиториев, сервисов и т.д.
+	// dbConn := db.GetDbConn()
+	dbPool := db.GetDbPool()
+
 	// Инициализируем роутер Chi
 	r := chi.NewRouter()
 
@@ -65,7 +78,7 @@ func main() {
 		}
 	}()
 
-	repository := orderRepo.NewOrderRepository()
+	repository := orderRepo.NewOrderRepository(dbPool)
 	inventoryClient := gRPCinventoryV1.NewClient(inventoryV1.NewInventoryStorageClient(invConn))
 	paymentClient := gRPCpaymentV1.NewClient(paymentV1.NewPaymentV1Client(payConn))
 
