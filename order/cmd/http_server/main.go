@@ -13,11 +13,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
 	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 	"github.com/mercuryqa/rocket-lab/order/internal/api/order/v1"
+	grpc "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/db"
 	gRPCinventoryV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/inventory/v1"
 	gRPCpaymentV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/payment/v1"
 	orderRepo "github.com/mercuryqa/rocket-lab/order/internal/repository/order"
@@ -29,34 +28,26 @@ import (
 const (
 	httpPort = "8088"
 	// Таймауты для HTTP-сервера
-	readHeaderTimeout = 5 * time.Second
-	shutdownTimeout   = 10 * time.Second
+	readHeaderTimeout      = 5 * time.Second
+	shutdownTimeout        = 10 * time.Second
+	inventoryServerAddress = "localhost:50055"
+	paymentServerAddress   = "localhost:50052"
+	envPath                = "../../../deploy/compose/order/.env"
 )
 
 func main() {
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load(envPath); err != nil {
 		log.Printf("⚠️  Не удалось загрузить .env: %v", err)
 	}
 
-	pool := db.GetDbPool()
-	defer pool.Close()
-
-	// дальше — инициализация репозиториев, сервисов и т.д.
-	// dbConn := db.GetDbConn()
 	dbPool := db.GetDbPool()
+	defer dbPool.Close()
 
 	// Инициализируем роутер Chi
 	r := chi.NewRouter()
 
 	// Подключаемся к Inventory gRPC-сервису
-	invConn, err := grpc.NewClient(
-		"localhost:50055",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		log.Println("Не удалось подключиться к сервису inventory:", err)
-		return // вместо fatal
-	}
+	invConn := grpc.GRPConn(inventoryServerAddress)
 	defer func() {
 		if cerr := invConn.Close(); cerr != nil {
 			log.Printf("failed to close inventory grpc connection: %v", cerr)
@@ -64,14 +55,7 @@ func main() {
 	}()
 
 	// Подключаемся к Payment gRPC-сервису
-	payConn, err := grpc.NewClient(
-		"localhost:50052",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		log.Println("Не удалось подключиться к сервису оплаты:", err)
-		return // вместо fatal
-	}
+	payConn := grpc.GRPConn(paymentServerAddress)
 	defer func() {
 		if cerr := payConn.Close(); cerr != nil {
 			log.Printf("failed to close payment grpc connection: %v", cerr)
@@ -118,7 +102,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
-	err = server.Shutdown(ctx)
+	err := server.Shutdown(ctx)
 	if err != nil {
 		log.Printf("❌ Ошибка при остановке сервера: %v\n", err)
 	}

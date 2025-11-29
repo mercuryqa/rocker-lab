@@ -16,12 +16,11 @@ var _ def.OrderRepository = (*OrderRepository)(nil)
 
 // Представляет потокобезопасное хранилище данных о заказах
 type OrderRepository struct {
-	// connDb *pgx.Conn
 	poolDb *pgxpool.Pool
 }
 
 func NewOrderRepository(poolDb *pgxpool.Pool) *OrderRepository {
-	migrationsDir := os.Getenv("MIGRATIONS_DIR")
+	migrationsDir := os.Getenv("MIGRATION_DIR")
 	if migrationsDir == "" {
 		migrationsDir = "order/migrations"
 	}
