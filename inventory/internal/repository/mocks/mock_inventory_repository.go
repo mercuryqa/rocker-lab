@@ -82,22 +82,24 @@ func (_c *InventoryRepository_GetPart_Call) RunAndReturn(run func(context.Contex
 }
 
 // ListParts provides a mock function with given fields: ctx, filter
-func (_m *InventoryRepository) ListParts(ctx context.Context, filter model.PartsFilter) (model.ListPartsResponse, error) {
+func (_m *InventoryRepository) ListParts(ctx context.Context, filter model.PartsFilter) ([]model.Part, error) {
 	ret := _m.Called(ctx, filter)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListParts")
 	}
 
-	var r0 model.ListPartsResponse
+	var r0 []model.Part
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.PartsFilter) (model.ListPartsResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, model.PartsFilter) ([]model.Part, error)); ok {
 		return rf(ctx, filter)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.PartsFilter) model.ListPartsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, model.PartsFilter) []model.Part); ok {
 		r0 = rf(ctx, filter)
 	} else {
-		r0 = ret.Get(0).(model.ListPartsResponse)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Part)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, model.PartsFilter) error); ok {
@@ -128,12 +130,12 @@ func (_c *InventoryRepository_ListParts_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *InventoryRepository_ListParts_Call) Return(_a0 model.ListPartsResponse, _a1 error) *InventoryRepository_ListParts_Call {
+func (_c *InventoryRepository_ListParts_Call) Return(_a0 []model.Part, _a1 error) *InventoryRepository_ListParts_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *InventoryRepository_ListParts_Call) RunAndReturn(run func(context.Context, model.PartsFilter) (model.ListPartsResponse, error)) *InventoryRepository_ListParts_Call {
+func (_c *InventoryRepository_ListParts_Call) RunAndReturn(run func(context.Context, model.PartsFilter) ([]model.Part, error)) *InventoryRepository_ListParts_Call {
 	_c.Call.Return(run)
 	return _c
 }

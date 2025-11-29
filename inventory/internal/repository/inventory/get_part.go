@@ -2,20 +2,22 @@ package inventory
 
 import (
 	"context"
+	"log"
+
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
-	"github.com/mercuryqa/rocket-lab/inventory/internal/repository/converter"
-	err "github.com/mercuryqa/rocket-lab/inventory/internal/service/inventory"
 )
 
-func (r *InventoryRepository) GetPart(_ context.Context, uuid string) (model.Part, error) {
+func (r *InventoryRepository) GetPart(ctx context.Context, uuid string) (model.Part, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	part, ok := r.inventory[uuid]
-	if !ok {
-		return model.Part{}, err.ErrNotFound
+	var part model.Part
+	err := r.collection.FindOne(ctx, bson.M{"uuid": uuid}).Decode(&part)
+	if err != nil {
+		log.Printf("Ошибка получения part из коллекции: %v\n", err)
+		return model.Part{}, model.ErrNotFound
 	}
-
-	return converter.RepoModelToModel(part), nil
+	return part, nil
 }

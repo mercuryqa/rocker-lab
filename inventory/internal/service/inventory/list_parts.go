@@ -6,10 +6,10 @@ import (
 	"github.com/mercuryqa/rocket-lab/inventory/internal/model"
 )
 
-func (s *InventoryService) ListParts(ctx context.Context, filter model.PartsFilter) (*model.ListPartsResponse, error) {
-	resp, err := s.repo.ListParts(ctx, filter) // resp — model.ListPartsResponse
-	if err != nil {
-		return nil, err
+func (s *InventoryService) ListParts(ctx context.Context, filter model.PartsFilter) ([]model.Part, error) {
+	parts, errRep := s.repo.ListParts(ctx, filter)
+	if errRep != nil {
+		return []model.Part{}, errRep
 	}
-	return &resp, nil // берем адрес структуры, чтобы получить *model.ListPartsResponse
+	return parts, nil
 }

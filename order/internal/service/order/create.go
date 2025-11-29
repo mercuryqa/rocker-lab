@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"slices"
-	"strconv"
 
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
@@ -21,13 +20,12 @@ func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*m
 	}
 
 	var existsPartUuids []string
-	for partUuid, part := range parts {
+	for _, part := range parts {
 		if part.StockQuantity <= 0 {
 			continue
 		}
 		totalPrice += part.Price
-		partUuidstr := strconv.Itoa(partUuid)
-		existsPartUuids = append(existsPartUuids, partUuidstr)
+		existsPartUuids = append(existsPartUuids, part.UUID)
 	}
 	if len(existsPartUuids) == 0 {
 		return nil, errors.New("ошибка: запчасти недоступны")

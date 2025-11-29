@@ -61,16 +61,27 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order model.OrderInfo
 		builderInsert = builderInsert.Values(orderUuidDb, partUuid)
 	}
 
+	// Формируем SQL и аргументы
 	query, args, err = builderInsert.ToSql()
 	if err != nil {
 		log.Printf("Ошибка build query: %v\n", err)
+		return "", err
 	}
-	rows, err := r.poolDb.Query(ctx, query, args...)
+
+	// Выполняем вставку
+	cmdTag, err := r.poolDb.Exec(ctx, query, args...)
 	if err != nil {
-		log.Printf("Ошибка insert в таблицу orders: %v\n", err)
+		log.Printf("Ошибка insert в таблицу order_items: %v\n", err)
+		return "", err
 	}
-	rows.Close()
-	log.Printf("Добавлена запись : %v\n", rows)
+
+	// Логируем результат
+	rowsInserted := cmdTag.RowsAffected()
+	if rowsInserted == 0 {
+		log.Printf("Ни одна запись не была добавлена для order_uuid %v", orderUuidDb)
+	} else {
+		log.Printf("Добавлено %d записей для order_uuid %v: %v", rowsInserted, orderUuidDb, order.PartUuids)
+	}
 
 	// КОД ДЛЯ ТРАНЗАКЦИИ
 	// err = tx.Commit(ctx)

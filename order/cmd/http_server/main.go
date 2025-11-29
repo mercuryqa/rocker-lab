@@ -81,7 +81,7 @@ func main() {
 	stop := make(chan struct{})
 	// Запускаем сервер в отдельной горутине
 	go func() {
-		log.Printf("HTTP-server запущен не порту %s\n", httpPort)
+		log.Printf("HTTP-server запущен на порту %s\n", httpPort)
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("Ошибка запуска сервера %v\n", err)
