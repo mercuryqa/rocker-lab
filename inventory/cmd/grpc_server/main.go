@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -8,6 +9,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -19,21 +23,60 @@ import (
 
 const (
 	grpcPort = 50055
+	envPath  = "../../../deploy/compose/inventory/.env"
 )
 
 func main() {
+	ctx := context.Background()
+
+	err := godotenv.Load(envPath)
+	if err != nil {
+		log.Printf("failed to load .env file: %v\n", err)
+		return
+	}
+
+	dbURI := os.Getenv("MONGO_DB_URI")
+	log.Println("Using URI:", dbURI) // для проверки
+
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbURI))
+	if err != nil {
+		log.Printf("failed to connect to mongo database: %v\n", err)
+		return
+	}
+
+	defer func() {
+		cerr := client.Disconnect(ctx)
+		if cerr != nil {
+			log.Printf("failed to disconnect mongo database: %v\n", err)
+			return
+		}
+	}()
+
+	// Проверяем соединение с базой данных
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Printf("failed to ping database: %v\n", err)
+		return
+	}
+
+	// Получаем базу данных
+	db := client.Database("inventory")
+
+	// TCP
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Printf("failed to listen: %v", err)
+		return
 	}
 	defer func() {
 		if cerr := lis.Close(); cerr != nil {
 			log.Printf("failed to close listener: %v\n", cerr)
+			return
 		}
 	}()
 
 	// 1️⃣ Создаём репозиторий (слой доступа к данным)
-	repo := repository.NewInventoryRepository()
+	repo := repository.NewInventoryRepository(db)
 
 	// 2️⃣ Создаём сервис (слой бизнес-логики)
 	svc := service.NewService(repo) // InventoryService реализует InventoryStorageServer
@@ -51,6 +94,7 @@ func main() {
 		log.Printf("🚀 gRPC server listening on %d\n", grpcPort)
 		if err := grpcServer.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
+			return
 		}
 	}()
 

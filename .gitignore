@@ -29,3 +29,6 @@ bin
 node_modules
 /shared/api/bundles/
 /coverage/
+
+deploy/compose/inventory/mongo_inventory_data/
+deploy/compose/order/postgres_order_data

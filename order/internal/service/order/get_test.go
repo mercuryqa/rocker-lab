@@ -7,7 +7,7 @@ import (
 func (s *ServiceSuite) TestGetOrderSuccess() {
 	id := "order-123"
 
-	expectedOrder := &model.Order{
+	expectedOrder := &model.OrderInfo{
 		OrderUuid:  id,
 		UserUuid:   "user-1",
 		PartUuids:  []string{"p1", "p2"},
@@ -19,7 +19,7 @@ func (s *ServiceSuite) TestGetOrderSuccess() {
 		On("GetOrder", id).
 		Return(expectedOrder, true)
 
-	order, ok := s.service.GetOrder(id)
+	order, ok := s.service.GetOrder(s.ctx, id)
 
 	s.Require().True(ok)
 	s.Require().NotNil(order)
@@ -34,9 +34,9 @@ func (s *ServiceSuite) TestGetOrderNotFound() {
 	// репозиторий возвращает nil, false
 	s.OrderRepository.
 		On("GetOrder", id).
-		Return((*model.Order)(nil), false)
+		Return((*model.OrderInfo)(nil), false)
 
-	order, ok := s.service.GetOrder(id)
+	order, ok := s.service.GetOrder(s.ctx, id)
 
 	s.Require().False(ok)
 	s.Require().Nil(order)

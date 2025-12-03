@@ -18,14 +18,22 @@ func (h *OrderHandler) createOrder(w http.ResponseWriter, r *http.Request) {
 
 	var req model.OrderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "failed decode order request", http.StatusBadRequest)
+		http.Error(w, "Failed to decode order data", http.StatusBadRequest)
+		return
 	}
 
-	var resp *model.OrderResponse
-	resp, err := h.service.CreateOrder(ctx, &req)
+	resp, err := h.service.CreateOrder(ctx, &model.OrderRequest{
+		UserUuid:  req.UserUuid,
+		PartUuids: req.PartUuids,
+	})
 	if err != nil {
-		log.Printf("failed call CreateOrder")
+		log.Printf("failed to save order: %v\n", err)
 	}
 
-	render.JSON(w, r, resp)
+	orderRes := &model.OrderResponse{
+		OrderUuid:  resp.OrderUuid,
+		TotalPrice: resp.TotalPrice,
+	}
+
+	render.JSON(w, r, orderRes)
 }

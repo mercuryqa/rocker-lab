@@ -5,8 +5,8 @@ import (
 	repoModel "github.com/mercuryqa/rocket-lab/order/internal/repository/model"
 )
 
-func ToModelRepoModel(order *repoModel.Order) *model.Order {
-	return &model.Order{
+func ToModelRepoModel(order *repoModel.Order) *model.OrderInfo {
+	return &model.OrderInfo{
 		OrderUuid:       order.OrderUuid,
 		UserUuid:        order.UserUuid,
 		PartUuids:       order.PartUuids,

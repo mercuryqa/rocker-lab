@@ -1,19 +1,31 @@
 package order
 
 import (
-	"github.com/mercuryqa/rocket-lab/order/internal/converter"
-	"github.com/mercuryqa/rocket-lab/order/internal/model"
+	"context"
+	"log"
+
+	sq "github.com/Masterminds/squirrel"
 )
 
-func (r *OrderRepository) PayOrder(id string, status model.OrderStatus) bool {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (r *OrderRepository) PayOrder(ctx context.Context, id, status, paymentMethodName, transactionUuid string) bool {
+	builderUpdate := sq.Update("orders").
+		Set("status", status).
+		Set("transaction_uuid", transactionUuid).
+		Set("payment_method", paymentMethodName).
+		Where(sq.Eq{"order_uuid": id}).
+		PlaceholderFormat(sq.Dollar)
 
-	order, ok := r.orders[id]
-	if !ok {
+	query, args, err := builderUpdate.ToSql()
+	if err != nil {
+		log.Printf("failed to build query")
 		return false
 	}
 
-	order.Status = converter.ToRepoModelModel(status)
+	_, err = r.poolDb.Exec(ctx, query, args...)
+	if err != nil {
+		log.Printf("failed update in table orders: %v\n", err)
+		return false
+	}
+
 	return true
 }

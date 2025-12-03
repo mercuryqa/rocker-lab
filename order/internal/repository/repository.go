@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 type OrderRepository interface {
-	CreateOrder(order *model.Order) error
-	PayOrder(id string, status model.OrderStatus) bool
-	GetOrder(id string) (*model.Order, bool)
-	CancelOrder(id string, status model.OrderStatus) bool
-	UpdateOrder(id string, paymentMethod model.PaymentMethod, transactionUuid string) bool
+	CreateOrder(ctx context.Context, order model.OrderInfo) (string, error)
+	PayOrder(ctx context.Context, id, status, paymentMethodName, transactionUuid string) bool
+	GetOrder(ctx context.Context, id string) (*model.OrderInfo, bool)
+	CancelOrder(ctx context.Context, id, status string) bool
+	// CheckItemsIn() bool
 }

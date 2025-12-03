@@ -1,8 +1,10 @@
 package order
 
-import "github.com/mercuryqa/rocket-lab/order/internal/model"
+import (
+	"context"
+)
 
-func (s *service) CancelOrder(id string, status model.OrderStatus) bool {
-	s.orderRepository.CancelOrder(id, status)
+func (s *service) CancelOrder(ctx context.Context, id, status string) bool {
+	s.orderRepository.CancelOrder(ctx, id, status)
 	return true
 }

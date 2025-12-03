@@ -2,26 +2,23 @@ package order
 
 import (
 	"context"
-	"log"
-
-	"github.com/google/uuid"
+	"errors"
+	"slices"
 
 	"github.com/mercuryqa/rocket-lab/order/internal/model"
 )
 
 // CreateOrder создает заказ
 func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*model.OrderResponse, error) {
-	// Получаю запчасти по их id
+	var totalPrice float64
+
 	parts, err := s.inventoryClient.ListParts(ctx, model.PartsFilter{
-		Uuids: info.GetPartUuids(),
+		Uuids: info.PartUuids,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	var totalPrice float64
-
-	// Провеока наличия деталей и подсчет суммы
 	var existsPartUuids []string
 	for _, part := range parts {
 		if part.StockQuantity <= 0 {
@@ -31,26 +28,24 @@ func (s *service) CreateOrder(ctx context.Context, info *model.OrderRequest) (*m
 		existsPartUuids = append(existsPartUuids, part.UUID)
 	}
 	if len(existsPartUuids) == 0 {
-		log.Printf("No inventory %v\n", err)
-		return nil, err
+		return nil, errors.New("ошибка: запчасти недоступны")
 	}
 
-	orderUUID := uuid.New().String()
+	slices.Sort(existsPartUuids)
 
-	order := model.Order{
-		OrderUuid:  orderUUID,
-		UserUuid:   info.GetUserUuid(),
+	order := model.OrderInfo{
+		UserUuid:   info.UserUuid,
 		PartUuids:  existsPartUuids,
 		TotalPrice: totalPrice,
 	}
 
-	err = s.orderRepository.CreateOrder(&order)
+	orderUuid, err := s.orderRepository.CreateOrder(ctx, order)
 	if err != nil {
 		return nil, err
 	}
 
 	return &model.OrderResponse{
-		OrderUuid:  order.OrderUuid,
+		OrderUuid:  orderUuid,
 		TotalPrice: order.TotalPrice,
 	}, nil
 }

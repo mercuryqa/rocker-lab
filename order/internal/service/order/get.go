@@ -1,9 +1,13 @@
 package order
 
-import "github.com/mercuryqa/rocket-lab/order/internal/model"
+import (
+	"context"
 
-func (s *service) GetOrder(id string) (*model.Order, bool) {
-	order, ok := s.orderRepository.GetOrder(id)
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
+)
+
+func (s *service) GetOrder(ctx context.Context, id string) (*model.OrderInfo, bool) {
+	order, ok := s.orderRepository.GetOrder(ctx, id)
 	if !ok {
 		return nil, false
 	}
