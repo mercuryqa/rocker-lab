@@ -1,8 +1,8 @@
 package order
 
-import "github.com/mercuryqa/rocket-lab/order/model"
+import "github.com/mercuryqa/rocket-lab/order/internal/model"
 
-func (s *service) GetOrder(id string) (*model.GetOrderResponse, bool) {
+func (s *service) GetOrder(id string) (*model.Order, bool) {
 	order, ok := s.orderRepository.GetOrder(id)
 	if !ok {
 		return nil, false

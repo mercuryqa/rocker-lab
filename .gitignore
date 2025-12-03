@@ -24,6 +24,7 @@
 /.cursor
 .DS_Store
 
+bin
 /bin
 node_modules
 /shared/api/bundles/

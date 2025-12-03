@@ -1,16 +1,21 @@
 package order
 
-func (s *OrderRepository) UpdateOrder(id, paymentMethod, transactionUuid string) bool {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+import (
+	"github.com/mercuryqa/rocket-lab/order/internal/converter"
+	"github.com/mercuryqa/rocket-lab/order/internal/model"
+)
 
-	order, ok := s.orders[id]
+func (r *OrderRepository) UpdateOrder(id string, paymentMethod model.PaymentMethod, transactionUuid string) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	order, ok := r.orders[id]
 	if !ok {
 		return false
 	}
 
 	order.TransactionUuid = transactionUuid
-	order.PaymentMethod = paymentMethod
+	order.PaymentMethod = converter.ToRepoModelPaymentMethodModelPaymentMethod(paymentMethod)
 
 	return true
 }

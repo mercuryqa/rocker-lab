@@ -12,10 +12,16 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
+	inventoryV1 "github.com/mercuryqa/rocket-lab/inventory/pkg/proto/inventory_v1"
 	"github.com/mercuryqa/rocket-lab/order/internal/api/order/v1"
+	gRPCinventoryV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/inventory/v1"
+	gRPCpaymentV1 "github.com/mercuryqa/rocket-lab/order/internal/client/grpc/payment/v1"
 	orderRepo "github.com/mercuryqa/rocket-lab/order/internal/repository/order"
 	orderService "github.com/mercuryqa/rocket-lab/order/internal/service/order"
+	paymentV1 "github.com/mercuryqa/rocket-lab/payment/pkg/proto/payment_v1"
 )
 
 const (
@@ -29,8 +35,41 @@ func main() {
 	// Инициализируем роутер Chi
 	r := chi.NewRouter()
 
+	// Подключаемся к Inventory gRPC-сервису
+	invConn, err := grpc.NewClient(
+		"localhost:50055",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Println("Не удалось подключиться к сервису inventory:", err)
+		return // вместо fatal
+	}
+	defer func() {
+		if cerr := invConn.Close(); cerr != nil {
+			log.Printf("failed to close inventory grpc connection: %v", cerr)
+		}
+	}()
+
+	// Подключаемся к Payment gRPC-сервису
+	payConn, err := grpc.NewClient(
+		"localhost:50052",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Println("Не удалось подключиться к сервису оплаты:", err)
+		return // вместо fatal
+	}
+	defer func() {
+		if cerr := payConn.Close(); cerr != nil {
+			log.Printf("failed to close payment grpc connection: %v", cerr)
+		}
+	}()
+
 	repository := orderRepo.NewOrderRepository()
-	service := orderService.NewService(repository)
+	inventoryClient := gRPCinventoryV1.NewClient(inventoryV1.NewInventoryStorageClient(invConn))
+	paymentClient := gRPCpaymentV1.NewClient(paymentV1.NewPaymentV1Client(payConn))
+
+	service := orderService.NewService(repository, inventoryClient, paymentClient)
 	handler := apiv1.NewOrderHandler(service)
 	handler.RegisterRoutes(r)
 
@@ -66,7 +105,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 	if err != nil {
 		log.Printf("❌ Ошибка при остановке сервера: %v\n", err)
 	}
